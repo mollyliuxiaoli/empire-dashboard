@@ -1,0 +1,56 @@
+{
+  "pages": {
+    "/_not-found/page": [
+      "static/chunks/webpack-ceb4478855ab868f.js",
+      "static/chunks/fd9d1056-70e1f83b612b23c6.js",
+      "static/chunks/23-224a7523101cb8a0.js",
+      "static/chunks/main-app-bbaff75ee5d7ebb1.js",
+      "static/chunks/app/_not-found/page-e9a1742c708a10c3.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-ceb4478855ab868f.js",
+      "static/chunks/fd9d1056-70e1f83b612b23c6.js",
+      "static/chunks/23-224a7523101cb8a0.js",
+      "static/chunks/main-app-bbaff75ee5d7ebb1.js",
+      "static/css/996d31bc4c66d0be.css",
+      "static/chunks/358-e26b68111945f76b.js",
+      "static/chunks/app/layout-f5126ffced04b22b.js"
+    ],
+    "/holdings/page": [
+      "static/chunks/webpack-ceb4478855ab868f.js",
+      "static/chunks/fd9d1056-70e1f83b612b23c6.js",
+      "static/chunks/23-224a7523101cb8a0.js",
+      "static/chunks/main-app-bbaff75ee5d7ebb1.js",
+      "static/chunks/app/holdings/page-0ce5816e181ce11b.js"
+    ],
+    "/macro/page": [
+      "static/chunks/webpack-ceb4478855ab868f.js",
+      "static/chunks/fd9d1056-70e1f83b612b23c6.js",
+      "static/chunks/23-224a7523101cb8a0.js",
+      "static/chunks/main-app-bbaff75ee5d7ebb1.js",
+      "static/chunks/app/macro/page-83cee603510a107b.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-ceb4478855ab868f.js",
+      "static/chunks/fd9d1056-70e1f83b612b23c6.js",
+      "static/chunks/23-224a7523101cb8a0.js",
+      "static/chunks/main-app-bbaff75ee5d7ebb1.js",
+      "static/chunks/647-3426697df578f91d.js",
+      "static/chunks/app/page-d0f9ff3fb9d479ea.js"
+    ],
+    "/logs/page": [
+      "static/chunks/webpack-ceb4478855ab868f.js",
+      "static/chunks/fd9d1056-70e1f83b612b23c6.js",
+      "static/chunks/23-224a7523101cb8a0.js",
+      "static/chunks/main-app-bbaff75ee5d7ebb1.js",
+      "static/chunks/app/logs/page-ce579a2ed6283c6a.js"
+    ],
+    "/trading/page": [
+      "static/chunks/webpack-ceb4478855ab868f.js",
+      "static/chunks/fd9d1056-70e1f83b612b23c6.js",
+      "static/chunks/23-224a7523101cb8a0.js",
+      "static/chunks/main-app-bbaff75ee5d7ebb1.js",
+      "static/chunks/app/trading/page-d025c62117e137a2.js"
+    ]
+  }
+}
