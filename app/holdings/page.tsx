@@ -280,32 +280,33 @@ export default function HoldingsPage() {
         </div>
 
         {/* 统计概览 */}
-        {activeTab !== 'us' && activeTab !== 'hk' && (
-          <div className="bg-card backdrop-blur-sm rounded-xl border border-border p-4 mb-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div>
-                <div className="text-xs text-gray-400 mb-1">持仓数量</div>
-                <div className="text-lg font-bold text-white">{stats.count} 只</div>
+        <div className="bg-card backdrop-blur-sm rounded-xl border border-border p-4 mb-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div>
+              <div className="text-xs text-gray-400 mb-1">持仓数量</div>
+              <div className="text-lg font-bold text-white">{stats.count} 只</div>
+            </div>
+            <div>
+              <div className="text-xs text-gray-400 mb-1">总金额</div>
+              <div className="text-lg font-bold text-white">
+                {activeTab === 'us' ? '$' : activeTab === 'hk' ? 'HK$' : '¥'}
+                {stats.totalAmount.toLocaleString()}
               </div>
-              <div>
-                <div className="text-xs text-gray-400 mb-1">总金额</div>
-                <div className="text-lg font-bold text-white">¥{stats.totalAmount.toLocaleString()}</div>
+            </div>
+            <div>
+              <div className="text-xs text-gray-400 mb-1">累计盈亏</div>
+              <div className={`text-lg font-bold ${stats.totalProfit >= 0 ? 'text-up' : 'text-down'}`}>
+                {stats.totalProfit >= 0 ? '+' : ''}{stats.profitPercent.toFixed(1)}%
               </div>
-              <div>
-                <div className="text-xs text-gray-400 mb-1">累计盈亏</div>
-                <div className={`text-lg font-bold ${stats.totalProfit >= 0 ? 'text-up' : 'text-down'}`}>
-                  {stats.totalProfit >= 0 ? '+' : ''}{stats.profitPercent.toFixed(1)}%
-                </div>
-              </div>
-              <div>
-                <div className="text-xs text-gray-400 mb-1">今日盈亏</div>
-                <div className={`text-lg font-bold ${stats.todayChange >= 0 ? 'text-up' : 'text-down'}`}>
-                  {stats.todayChange >= 0 ? '+' : ''}{stats.todayChange.toFixed(2)}%
-                </div>
+            </div>
+            <div>
+              <div className="text-xs text-gray-400 mb-1">今日盈亏</div>
+              <div className={`text-lg font-bold ${stats.todayChange >= 0 ? 'text-up' : 'text-down'}`}>
+                {stats.todayChange >= 0 ? '+' : ''}{stats.todayChange.toFixed(2)}%
               </div>
             </div>
           </div>
-        )}
+        </div>
 
         {/* 排序按钮 */}
         <div className="flex justify-end gap-2">
@@ -358,7 +359,7 @@ export default function HoldingsPage() {
                     <span className={`text-xs px-2 py-0.5 rounded flex-shrink-0 ${
                       fund.profit >= 0 ? 'bg-up/20 text-up' : 'bg-down/20 text-down'
                     }`}>
-                      {fund.profit >= 0 ? '+' : ''}{fund.profit.toFixed(1)}%
+                      {fund.profit >= 0 ? '+' : ''}{(fund.profit / (fund.amount - fund.profit) * 100).toFixed(1)}%
                     </span>
                   </div>
                   <div className="text-xs text-gray-400">
@@ -545,21 +546,32 @@ export default function HoldingsPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 text-xs mb-3">
-                <div>
-                  <div className="text-gray-400">持仓</div>
-                  <div className="text-white font-medium">{stock.shares}股</div>
-                </div>
-                <div>
-                  <div className="text-gray-400">市值</div>
-                  <div className="text-white font-medium">${stock.marketValue.toLocaleString()}</div>
-                </div>
+              <div className="flex items-center justify-between text-xs mb-3">
+                <div className="text-gray-400">🐅 Tiger</div>
+                <div className="text-white font-medium">${stock.marketValue.toLocaleString()}</div>
               </div>
 
               <div className="border-t border-border pt-3 flex justify-between items-center">
-                <div className="text-xs text-gray-400">🐅 Tiger</div>
-                <div className={`text-sm font-medium ${stock.pnl >= 0 ? 'text-up' : 'text-down'}`}>
-                  {stock.pnl >= 0 ? '+' : ''}${stock.pnl.toLocaleString()}
+                <div className="text-xs text-gray-400">{getRefreshTime()} 刷新</div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleFeedback(stock as any);
+                    }}
+                    className="text-xs text-gray-400 hover:text-white"
+                  >
+                    📝 反馈
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push(`/holdings/${stock.code}`);
+                    }}
+                    className="text-xs text-gold hover:underline"
+                  >
+                    详情 →
+                  </button>
                 </div>
               </div>
             </DashboardCard>
@@ -596,21 +608,32 @@ export default function HoldingsPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 text-xs mb-3">
-                <div>
-                  <div className="text-gray-400">持仓</div>
-                  <div className="text-white font-medium">{stock.shares}股</div>
-                </div>
-                <div>
-                  <div className="text-gray-400">市值</div>
-                  <div className="text-white font-medium">HK${stock.marketValue.toLocaleString()}</div>
-                </div>
+              <div className="flex items-center justify-between text-xs mb-3">
+                <div className="text-gray-400">🐅 Tiger</div>
+                <div className="text-white font-medium">HK${stock.marketValue.toLocaleString()}</div>
               </div>
 
               <div className="border-t border-border pt-3 flex justify-between items-center">
-                <div className="text-xs text-gray-400">🐅 Tiger</div>
-                <div className={`text-sm font-medium ${stock.pnl >= 0 ? 'text-up' : 'text-down'}`}>
-                  {stock.pnl >= 0 ? '+' : ''}HK${stock.pnl.toLocaleString()}
+                <div className="text-xs text-gray-400">{getRefreshTime()} 刷新</div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleFeedback(stock as any);
+                    }}
+                    className="text-xs text-gray-400 hover:text-white"
+                  >
+                    📝 反馈
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push(`/holdings/${stock.code}`);
+                    }}
+                    className="text-xs text-gold hover:underline"
+                  >
+                    详情 →
+                  </button>
                 </div>
               </div>
             </DashboardCard>

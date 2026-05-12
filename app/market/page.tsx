@@ -29,6 +29,10 @@ export default function MarketPage() {
             </div>
           ))}
         </div>
+        <div className="mt-4 pt-4 border-t border-border">
+          <div className="text-xs text-gold font-medium mb-1">A股简评</div>
+          <p className="text-sm text-gray-300">三大指数小幅调整，创业板领跌。半导体和AI板块回调明显，消费金融相对抗跌。市场观望情绪浓厚，等待政策面催化。</p>
+        </div>
       </DashboardCard>
 
       {/* 港股指数 */}
@@ -45,6 +49,10 @@ export default function MarketPage() {
               <div className="text-2xl font-bold text-white">{idx.value.toLocaleString()}</div>
             </div>
           ))}
+        </div>
+        <div className="mt-4 pt-4 border-t border-border">
+          <div className="text-xs text-gold font-medium mb-1">港股简评</div>
+          <p className="text-sm text-gray-300">恒生指数和恒生科技小幅收跌。互联网板块继续承压，美团、阿里均下跌。南向资金流出，市场情绪偏弱。</p>
         </div>
       </DashboardCard>
 
@@ -89,6 +97,10 @@ export default function MarketPage() {
           ))}
         </div>
         {macro.usStocks.note && <div className="mt-3 text-xs text-gray-400">📌 {macro.usStocks.note}</div>}
+        <div className="mt-4 pt-4 border-t border-border">
+          <div className="text-xs text-gold font-medium mb-1">美股简评</div>
+          <p className="text-sm text-gray-300">三大指数齐创历史收盘新高。科技股表现强劲，利好QDII基金。但需警惕高位回调风险。</p>
+        </div>
       </DashboardCard>
 
       {/* 大宗商品 */}
@@ -115,6 +127,10 @@ export default function MarketPage() {
             </div>
           ))}
         </div>
+        <div className="mt-4 pt-4 border-t border-border">
+          <div className="text-xs text-gold font-medium mb-1">黄金简评</div>
+          <p className="text-sm text-gray-300">国际金价高位震荡，$4,700/oz以上运行。地缘政治风险和央行购金支撑金价。短期有调整压力，中期仍看涨。</p>
+        </div>
       </DashboardCard>
 
       {/* 黄金持仓 */}
@@ -135,28 +151,6 @@ export default function MarketPage() {
             <div className={`text-sm font-medium ${gold.profit >= 0 ? 'text-up' : 'text-down'}`}>
               ¥{gold.value.toLocaleString()} · {gold.profit >= 0 ? '+' : ''}¥{gold.profit}({gold.profitPercent}%)
             </div>
-          </div>
-        </div>
-      </DashboardCard>
-
-      {/* 行情分析 */}
-      <DashboardCard title="📝 行情简评" className="mb-6">
-        <div className="space-y-3">
-          <div className="bg-background/50 p-4 rounded-lg border border-border">
-            <h4 className="text-gold font-medium mb-2">🇨🇳 A股</h4>
-            <p className="text-sm text-gray-300">三大指数小幅调整，创业板领跌。半导体和AI板块回调明显，消费金融相对抗跌。市场观望情绪浓厚，等待政策面催化。</p>
-          </div>
-          <div className="bg-background/50 p-4 rounded-lg border border-border">
-            <h4 className="text-gold font-medium mb-2">🇭🇰 港股</h4>
-            <p className="text-sm text-gray-300">恒生指数和恒生科技小幅收跌。互联网板块继续承压，美团、阿里均下跌。南向资金流出，市场情绪偏弱。</p>
-          </div>
-          <div className="bg-background/50 p-4 rounded-lg border border-border">
-            <h4 className="text-gold font-medium mb-2">🇺🇸 美股</h4>
-            <p className="text-sm text-gray-300">三大指数齐创历史收盘新高。科技股表现强劲，利好QDII基金。但需警惕高位回调风险。</p>
-          </div>
-          <div className="bg-background/50 p-4 rounded-lg border border-border">
-            <h4 className="text-gold font-medium mb-2">🥇 黄金</h4>
-            <p className="text-sm text-gray-300">国际金价高位震荡，$4,700/oz以上运行。地缘政治风险和央行购金支撑金价。短期有调整压力，中期仍看涨。</p>
           </div>
         </div>
       </DashboardCard>

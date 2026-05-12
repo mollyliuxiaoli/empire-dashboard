@@ -189,144 +189,97 @@ export default function ActionsPage() {
       {activeTab === 't0' && (
         <div className="space-y-6">
           <DashboardCard title="T+0 标的池" icon="🎯">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left py-3 px-2 text-sm text-gray-400 font-medium">代码</th>
-                    <th className="text-left py-3 px-2 text-sm text-gray-400 font-medium">名称</th>
-                    <th className="text-right py-3 px-2 text-sm text-gray-400 font-medium">现价</th>
-                    <th className="text-right py-3 px-2 text-sm text-gray-400 font-medium">涨跌%</th>
-                    <th className="text-right py-3 px-2 text-sm text-gray-400 font-medium">振幅%</th>
-                    <th className="text-center py-3 px-2 text-sm text-gray-400 font-medium">状态</th>
-                    <th className="text-left py-3 px-2 text-sm text-gray-400 font-medium">持仓</th>
-                    <th className="text-left py-3 px-2 text-sm text-gray-400 font-medium">信号</th>
-                    <th className="text-center py-3 px-2 text-sm text-gray-400 font-medium">操作</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {portfolioData.t0Targets.map((target) => {
-                    const holdingStatus = getHoldingStatus(target.code);
-                    return (
-                      <tr key={target.code} className="border-b border-border hover:bg-white/5">
-                        <td className="py-3 px-2 text-sm font-medium text-white">{target.code}</td>
-                        <td className="py-3 px-2 text-sm">
-                          <button onClick={() => router.push(`/holdings/${target.code}?from=/actions`)} className="text-white hover:text-gold underline">
-                            {target.name}
-                          </button>
-                        </td>
-                        <td className="py-3 px-2 text-sm text-right text-white">{target.price.toFixed(3)}</td>
-                        <td className={`py-3 px-2 text-sm text-right ${target.dailyChange >= 0 ? 'text-up' : 'text-down'}`}>
-                          {target.dailyChange >= 0 ? '+' : ''}{target.dailyChange.toFixed(2)}%
-                        </td>
-                        <td className="py-3 px-2 text-sm text-right text-white">{target.amplitude.toFixed(2)}%</td>
-                        <td className={`py-3 px-2 text-sm text-center font-medium ${getStatusColor(target.status)}`}>{target.status}</td>
-                        <td className="py-3 px-2 text-sm">
-                          {holdingStatus.held ? (
-                            <div className="flex flex-col">
-                              <span className="text-green-400">已持仓 ¥{holdingStatus.amount.toLocaleString()}</span>
-                              <span className={`text-xs ${holdingStatus.profit >= 0 ? 'text-up' : 'text-down'}`}>
-                                {holdingStatus.profit >= 0 ? '+' : ''}¥{holdingStatus.profit.toLocaleString()}
-                              </span>
-                            </div>
-                          ) : (
-                            <span className="text-gray-400">未持仓</span>
-                          )}
-                        </td>
-                        <td className="py-3 px-2 text-sm text-gray-300">{target.signal}</td>
-                        <td className="py-3 px-2 text-center">
-                          <button onClick={() => router.push(`/holdings/${target.code}?from=/actions`)} className="text-xs bg-gold/20 text-gold px-3 py-1 rounded hover:bg-gold/30 transition-colors">详情</button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-            <div className="mt-4 text-center">
-              <button
-                onClick={handleScanMore}
-                className="text-sm bg-gold/20 text-gold px-6 py-2 rounded-lg hover:bg-gold/30 transition-colors"
-              >
-                🔍 扫描更多T+0标的
-              </button>
-            </div>
-          </DashboardCard>
+            <div className="space-y-4">
+              {!showExpandedPool && (
+                <div className="text-sm text-gray-400">
+                  显示当前持仓的T+0标的 ({portfolioData.t0Targets.length}只)
+                </div>
+              )}
 
-          {/* Expanded T0 Pool */}
-          {showExpandedPool && expandedT0Pool.length > 0 && (
-            <DashboardCard title="更多T+0标的" icon="📊">
-              <div className="space-y-4">
+              {showExpandedPool && (
                 <div className="text-sm text-gray-400">
                   找到 <span className="text-gold font-medium">{expandedT0Pool.length}</span> 只振幅&gt;1.5%的T+0标的
                 </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-border">
-                        <th className="text-left py-3 px-2 text-sm text-gray-400 font-medium">代码</th>
-                        <th className="text-left py-3 px-2 text-sm text-gray-400 font-medium">名称</th>
-                        <th className="text-right py-3 px-2 text-sm text-gray-400 font-medium">现价</th>
-                        <th className="text-right py-3 px-2 text-sm text-gray-400 font-medium">涨跌%</th>
-                        <th className="text-right py-3 px-2 text-sm text-gray-400 font-medium">振幅%</th>
-                        <th className="text-center py-3 px-2 text-sm text-gray-400 font-medium">状态</th>
-                        <th className="text-left py-3 px-2 text-sm text-gray-400 font-medium">持仓</th>
-                        <th className="text-left py-3 px-2 text-sm text-gray-400 font-medium">信号</th>
-                        <th className="text-center py-3 px-2 text-sm text-gray-400 font-medium">操作</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {expandedT0Pool.slice(0, (t0PoolPage + 1) * 10).map((target) => {
-                        const holdingStatus = getHoldingStatus(target.code);
-                        return (
-                          <tr key={target.code} className="border-b border-border hover:bg-white/5">
-                            <td className="py-3 px-2 text-sm font-medium text-white">{target.code}</td>
-                            <td className="py-3 px-2 text-sm">
-                              <button onClick={() => router.push(`/holdings/${target.code}?from=/actions`)} className="text-white hover:text-gold underline">
-                                {target.name}
-                              </button>
-                            </td>
-                            <td className="py-3 px-2 text-sm text-right text-white">{target.price.toFixed(3)}</td>
-                            <td className={`py-3 px-2 text-sm text-right ${target.dailyChange >= 0 ? 'text-up' : 'text-down'}`}>
-                              {target.dailyChange >= 0 ? '+' : ''}{target.dailyChange.toFixed(2)}%
-                            </td>
-                            <td className="py-3 px-2 text-sm text-right text-white">{target.amplitude.toFixed(2)}%</td>
-                            <td className={`py-3 px-2 text-sm text-center font-medium ${getStatusColor(target.status)}`}>{target.status}</td>
-                            <td className="py-3 px-2 text-sm">
-                              {holdingStatus.held ? (
-                                <div className="flex flex-col">
-                                  <span className="text-green-400">已持仓 ¥{holdingStatus.amount.toLocaleString()}</span>
-                                  <span className={`text-xs ${holdingStatus.profit >= 0 ? 'text-up' : 'text-down'}`}>
-                                    {holdingStatus.profit >= 0 ? '+' : ''}¥{holdingStatus.profit.toLocaleString()}
-                                  </span>
-                                </div>
-                              ) : (
-                                <span className="text-gray-400">未持仓</span>
-                              )}
-                            </td>
-                            <td className="py-3 px-2 text-sm text-gray-300">{target.signal}</td>
-                            <td className="py-3 px-2 text-center">
-                              <button onClick={() => router.push(`/holdings/${target.code}?from=/actions`)} className="text-xs bg-gold/20 text-gold px-3 py-1 rounded hover:bg-gold/30 transition-colors">详情</button>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-                {expandedT0Pool.length > (t0PoolPage + 1) * 10 && (
-                  <div className="mt-4 text-center">
-                    <button
-                      onClick={loadMoreT0}
-                      className="text-sm bg-gold/20 text-gold px-6 py-2 rounded-lg hover:bg-gold/30 transition-colors"
-                    >
-                      加载更多
-                    </button>
-                  </div>
+              )}
+
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-border">
+                      <th className="text-left py-3 px-2 text-sm text-gray-400 font-medium">代码</th>
+                      <th className="text-left py-3 px-2 text-sm text-gray-400 font-medium">名称</th>
+                      <th className="text-right py-3 px-2 text-sm text-gray-400 font-medium">现价</th>
+                      <th className="text-right py-3 px-2 text-sm text-gray-400 font-medium">涨跌%</th>
+                      <th className="text-right py-3 px-2 text-sm text-gray-400 font-medium">振幅%</th>
+                      <th className="text-center py-3 px-2 text-sm text-gray-400 font-medium">状态</th>
+                      <th className="text-left py-3 px-2 text-sm text-gray-400 font-medium">持仓</th>
+                      <th className="text-left py-3 px-2 text-sm text-gray-400 font-medium">信号</th>
+                      <th className="text-center py-3 px-2 text-sm text-gray-400 font-medium">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(showExpandedPool ? expandedT0Pool.slice(0, (t0PoolPage + 1) * 10) : portfolioData.t0Targets).map((target) => {
+                      const holdingStatus = getHoldingStatus(target.code);
+                      return (
+                        <tr key={target.code} className="border-b border-border hover:bg-white/5">
+                          <td className="py-3 px-2 text-sm font-medium text-white">{target.code}</td>
+                          <td className="py-3 px-2 text-sm">
+                            <button onClick={() => router.push(`/holdings/${target.code}?from=/actions`)} className="text-white hover:text-gold underline">
+                              {target.name}
+                            </button>
+                          </td>
+                          <td className="py-3 px-2 text-sm text-right text-white">{target.price.toFixed(3)}</td>
+                          <td className={`py-3 px-2 text-sm text-right ${target.dailyChange >= 0 ? 'text-up' : 'text-down'}`}>
+                            {target.dailyChange >= 0 ? '+' : ''}{target.dailyChange.toFixed(2)}%
+                          </td>
+                          <td className="py-3 px-2 text-sm text-right text-white">{target.amplitude.toFixed(2)}%</td>
+                          <td className={`py-3 px-2 text-sm text-center font-medium ${getStatusColor(target.status)}`}>{target.status}</td>
+                          <td className="py-3 px-2 text-sm">
+                            {holdingStatus.held ? (
+                              <div className="flex flex-col">
+                                <span className="text-green-400">已持仓 ¥{holdingStatus.amount.toLocaleString()}</span>
+                                <span className={`text-xs ${holdingStatus.profit >= 0 ? 'text-up' : 'text-down'}`}>
+                                  {holdingStatus.profit >= 0 ? '+' : ''}¥{holdingStatus.profit.toLocaleString()}
+                                </span>
+                              </div>
+                            ) : (
+                              <span className="text-gray-400">未持仓</span>
+                            )}
+                          </td>
+                          <td className="py-3 px-2 text-sm text-gray-300">{target.signal}</td>
+                          <td className="py-3 px-2 text-center">
+                            <button onClick={() => router.push(`/holdings/${target.code}?from=/actions`)} className="text-xs bg-gold/20 text-gold px-3 py-1 rounded hover:bg-gold/30 transition-colors">详情</button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="mt-4 text-center space-y-2">
+                {!showExpandedPool ? (
+                  <button
+                    onClick={handleScanMore}
+                    className="text-sm bg-gold/20 text-gold px-6 py-2 rounded-lg hover:bg-gold/30 transition-colors"
+                  >
+                    🔍 扫描更多T+0标的
+                  </button>
+                ) : (
+                  <>
+                    {expandedT0Pool.length > (t0PoolPage + 1) * 10 && (
+                      <button
+                        onClick={loadMoreT0}
+                        className="text-sm bg-gold/20 text-gold px-6 py-2 rounded-lg hover:bg-gold/30 transition-colors"
+                      >
+                        加载更多
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
-            </DashboardCard>
-          )}
+            </div>
+          </DashboardCard>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <DashboardCard title="做T计算器" icon="🧮">

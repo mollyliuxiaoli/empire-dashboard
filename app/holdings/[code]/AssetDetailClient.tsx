@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import DashboardCard from '@/components/DashboardCard';
-import { portfolioData, t0Targets } from '@/data/portfolio';
+import { portfolioData, t0Targets, usStocks, hkStocks } from '@/data/portfolio';
 
 export default function AssetDetailClient() {
   const params = useParams();
@@ -21,19 +21,24 @@ export default function AssetDetailClient() {
 
   const code = params.code as string;
 
-  // 查找标的（基金/ETF/T0标的）
+  // 查找标的（基金/ETF/T0标的/美股/港股）
   const fund = portfolioData.funds.find(f => f.code === code);
   const etf = portfolioData.etfStocks.find(e => e.code === code);
   const t0 = t0Targets.find(t => t.code === code);
-  const asset = fund || etf;
+  const usStock = usStocks.find(s => s.code === code);
+  const hkStock = hkStocks.find(s => s.code === code);
+  const asset = fund || etf || usStock || hkStock;
+  const stock = usStock || hkStock;
 
   // 统一显示信息
-  const displayName = asset ? (fund ? fund.name : etf!.name) : (t0?.name || code);
-  const displayType = asset ? (fund ? fund.type : 'ETF') : 'ETF(T+0)';
-  const displayAmount = asset ? (fund ? fund.amount : etf!.amount) : 0;
-  const displayDailyChange = asset ? (fund ? fund.dailyChange : etf!.dailyChange) : (t0?.dailyChange || 0);
-  const currentPrice = asset ? (fund ? fund.current : etf!.price) : (t0?.price || 0);
+  const displayName = asset ? (fund ? fund.name : etf ? etf.name : stock ? stock.name : (t0?.name || code)) : (t0?.name || code);
+  const displayType = asset ? (fund ? fund.type : etf ? 'ETF' : usStock ? '🇺🇸美股' : hkStock ? '🇭🇰港股' : 'ETF(T+0)') : 'ETF(T+0)';
+  const displayAmount = asset ? (fund ? fund.amount : etf ? etf.amount : stock ? stock.marketValue : 0) : 0;
+  const displayDailyChange = asset ? (fund ? fund.dailyChange : etf ? etf.dailyChange : 0) : (t0?.dailyChange || 0);
+  const currentPrice = asset ? (fund ? fund.current : etf ? etf.price : stock ? stock.price : (t0?.price || 0)) : (t0?.price || 0);
   const isT0 = !!t0;
+  const isUSStock = !!usStock;
+  const isHKStock = !!hkStock;
 
   const getRefreshTime = () => {
     const refreshTime = new Date(currentTime.getTime() - 60000);
@@ -89,11 +94,17 @@ export default function AssetDetailClient() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <div className="text-xs text-gray-400 mb-1">持仓金额</div>
-                <div className="text-xl font-bold text-white">{displayAmount > 0 ? `¥${displayAmount.toLocaleString()}` : '未持仓/观望'}</div>
+                <div className="text-xl font-bold text-white">
+                  {displayAmount > 0 ? `${isUSStock ? '$' : isHKStock ? 'HK$' : '¥'}${displayAmount.toLocaleString()}` : '未持仓/观望'}
+                </div>
               </div>
               <div>
                 <div className="text-xs text-gray-400 mb-1">现价</div>
-                <div className="text-xl font-bold text-white">¥{currentPrice.toFixed(currentPrice < 1 ? 4 : 3)}</div>
+                <div className="text-xl font-bold text-white">
+                  {isUSStock ? `$${currentPrice.toFixed(2)}` :
+                   isHKStock ? `HK$${currentPrice.toFixed(3)}` :
+                   `¥${currentPrice.toFixed(currentPrice < 1 ? 4 : 3)}`}
+                </div>
               </div>
               <div>
                 <div className="text-xs text-gray-400 mb-1">今日涨跌</div>
@@ -106,11 +117,15 @@ export default function AssetDetailClient() {
                 <div className="text-xl font-bold text-white">
                   {fund ? (
                     <span className={fund.profit >= 0 ? 'text-up' : 'text-down'}>
-                      {fund.profit >= 0 ? '+' : ''}{fund.profit.toFixed(1)}%
+                      {fund.profit >= 0 ? '+' : ''}{(fund.profit / (fund.amount - fund.profit) * 100).toFixed(1)}%
                     </span>
                   ) : etf ? (
                     <span className={etf.profitPercent >= 0 ? 'text-up' : 'text-down'}>
                       {etf.profitPercent >= 0 ? '+' : ''}{etf.profitPercent.toFixed(1)}%
+                    </span>
+                  ) : stock ? (
+                    <span className={stock.pnl >= 0 ? 'text-up' : 'text-down'}>
+                      {stock.pnl >= 0 ? '+' : ''}{(stock.pnl / (stock.marketValue - stock.pnl) * 100).toFixed(1)}%
                     </span>
                   ) : (
                     <span className="text-gray-400">T+0标的</span>
@@ -138,6 +153,32 @@ export default function AssetDetailClient() {
                   </span>
                   <span className="px-2 py-1 rounded text-xs bg-gold/20 text-gold">{fund.type}</span>
                   {fund.autoInvest > 0 && <span className="px-2 py-1 rounded text-xs bg-green-500/20 text-green-400">定投中</span>}
+                </div>
+              </>
+            )}
+
+            {/* 股票专用：持仓/成本/盈亏 */}
+            {stock && (
+              <>
+                <div className="border-t border-border pt-4 grid grid-cols-2 gap-4">
+                  <div>
+                    <div className="text-xs text-gray-400 mb-1">持仓数量</div>
+                    <div className="text-sm font-medium text-white">{stock.shares}股</div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-400 mb-1">成本价</div>
+                    <div className="text-sm font-medium text-white">
+                      {isUSStock ? `$${stock.costPrice.toFixed(2)}` :
+                       isHKStock ? `HK$${stock.costPrice.toFixed(3)}` :
+                       `¥${stock.costPrice.toFixed(2)}`}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <span className={`px-2 py-1 rounded text-xs ${stock.pnl >= 0 ? 'bg-up/20 text-up' : 'bg-down/20 text-down'}`}>
+                    {stock.pnl >= 0 ? '盈利' : '亏损'}
+                  </span>
+                  <span className="px-2 py-1 rounded text-xs bg-gold/20 text-gold">🐅 Tiger账户</span>
                 </div>
               </>
             )}
