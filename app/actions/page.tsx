@@ -147,6 +147,17 @@ export default function ActionsPage() {
                     <span className="text-xs text-gray-400">{action.code}</span>
                   </div>
                   <div className="text-sm text-gray-300">{action.trigger}</div>
+                  <div className="mt-3 flex gap-2">
+                    <button
+                      onClick={() => router.push(`/holdings/${action.code}`)}
+                      className="text-xs bg-gold/20 text-gold px-3 py-1.5 rounded hover:bg-gold/30 transition-colors"
+                    >
+                      📝 反馈
+                    </button>
+                    <button className="text-xs bg-blue-500/20 text-blue-400 px-3 py-1.5 rounded hover:bg-blue-500/30 transition-colors">
+                      ⏰ 设提醒
+                    </button>
+                  </div>
                 </div>
               ))}
               {portfolioData.pendingActions.length === 0 && (

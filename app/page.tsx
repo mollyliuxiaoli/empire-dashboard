@@ -196,11 +196,21 @@ export default function Home() {
             <div>
               <div className="text-sm text-gray-400 mb-2">领涨</div>
               {topGainers.map((h, idx) => (
-                <div key={idx} className="flex justify-between items-center py-2 border-b border-gray-700">
-                  <span className="text-sm text-white">{h.name}</span>
-                  <span className={`text-sm font-medium ${h.dailyPnlPercent >= 0 ? 'text-up' : 'text-down'}`}>
-                    {h.dailyPnlPercent >= 0 ? '+' : ''}{h.dailyPnlPercent.toFixed(2)}%
-                  </span>
+                <div key={idx} onClick={() => router.push(`/holdings/${h.code}`)} className="flex justify-between items-center py-2 border-b border-gray-700 hover:bg-white/5 cursor-pointer rounded px-1">
+                  <div className="flex-1 min-w-0">
+                    <span className="text-sm text-white block truncate">{h.name}</span>
+                    <span className="text-xs text-gray-400">持仓 ¥{h.marketValue.toLocaleString()}</span>
+                  </div>
+                  <div className="text-right ml-2">
+                    <span className={`text-sm font-medium block ${h.dailyPnlPercent >= 0 ? 'text-up' : 'text-down'}`}>
+                      {leaderboardTab === 'percentage'
+                        ? `${h.dailyPnlPercent >= 0 ? '+' : ''}${h.dailyPnlPercent.toFixed(2)}%`
+                        : `${h.dailyPnlAmount >= 0 ? '+' : ''}¥${h.dailyPnlAmount.toLocaleString()}`}
+                    </span>
+                    <span className={`text-xs block ${h.unrealizedPnlAmount >= 0 ? 'text-up' : 'text-down'}`}>
+                      累计 {h.unrealizedPnlAmount >= 0 ? '+' : ''}¥{h.unrealizedPnlAmount.toLocaleString()}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>
@@ -208,11 +218,21 @@ export default function Home() {
             <div>
               <div className="text-sm text-gray-400 mb-2">领跌</div>
               {topLosers.map((h, idx) => (
-                <div key={idx} className="flex justify-between items-center py-2 border-b border-gray-700">
-                  <span className="text-sm text-white">{h.name}</span>
-                  <span className={`text-sm font-medium ${h.dailyPnlPercent >= 0 ? 'text-up' : 'text-down'}`}>
-                    {h.dailyPnlPercent >= 0 ? '+' : ''}{h.dailyPnlPercent.toFixed(2)}%
-                  </span>
+                <div key={idx} onClick={() => router.push(`/holdings/${h.code}`)} className="flex justify-between items-center py-2 border-b border-gray-700 hover:bg-white/5 cursor-pointer rounded px-1">
+                  <div className="flex-1 min-w-0">
+                    <span className="text-sm text-white block truncate">{h.name}</span>
+                    <span className="text-xs text-gray-400">持仓 ¥{h.marketValue.toLocaleString()}</span>
+                  </div>
+                  <div className="text-right ml-2">
+                    <span className={`text-sm font-medium block ${h.dailyPnlPercent >= 0 ? 'text-up' : 'text-down'}`}>
+                      {leaderboardTab === 'percentage'
+                        ? `${h.dailyPnlPercent >= 0 ? '+' : ''}${h.dailyPnlPercent.toFixed(2)}%`
+                        : `${h.dailyPnlAmount >= 0 ? '+' : ''}¥${h.dailyPnlAmount.toLocaleString()}`}
+                    </span>
+                    <span className={`text-xs block ${h.unrealizedPnlAmount >= 0 ? 'text-up' : 'text-down'}`}>
+                      累计 {h.unrealizedPnlAmount >= 0 ? '+' : ''}¥{h.unrealizedPnlAmount.toLocaleString()}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>
