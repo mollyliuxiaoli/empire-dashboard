@@ -1,9 +1,12 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/logs/page": "app/logs/page.js",
+  "/actions/page": "app/actions/page.js",
+  "/market/page": "app/market/page.js",
   "/holdings/page": "app/holdings/page.js",
   "/macro/page": "app/macro/page.js",
+  "/logs/page": "app/logs/page.js",
   "/trading/page": "app/trading/page.js",
+  "/profile/page": "app/profile/page.js",
   "/page": "app/page.js",
   "/holdings/[code]/page": "app/holdings/[code]/page.js"
 }
