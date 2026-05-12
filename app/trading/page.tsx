@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { portfolioData } from '@/data/portfolio';
 import DashboardCard from '@/components/DashboardCard';
 import T0Calculator from '@/components/T0Calculator';
+import { tradingAPI } from '@/lib/api/trading-api';
+import { TradingPosition } from '@/lib/api/api-structure';
 
 export default function TradingPage() {
   const [isRefreshing, setIsRefreshing] = useState(false);

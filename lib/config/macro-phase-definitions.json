@@ -1,0 +1,64 @@
+{
+  "phases": {
+    "risk-on": {
+      "name": "Risk-On",
+      "description": "Optimistic sentiment, growth assets favored",
+      "overweight": ["crypto", "index"],
+      "underweight": ["bond", "commodity"],
+      "indicators": {
+        "vix": { "condition": "< 20", "weight": 2 },
+        "put_call_ratio": { "condition": "< 0.8", "weight": 1 },
+        "credit_spread": { "condition": "< 100bps", "weight": 2 }
+      },
+      "color": "#22c55e"
+    },
+    "risk-off": {
+      "name": "Risk-Off",
+      "description": "Risk aversion, safe-haven assets favored",
+      "overweight": ["bond", "commodity"],
+      "underweight": ["crypto", "index"],
+      "indicators": {
+        "vix": { "condition": "> 25", "weight": 2 },
+        "put_call_ratio": { "condition": "> 1.2", "weight": 1 },
+        "credit_spread": { "condition": "> 150bps", "weight": 2 }
+      },
+      "color": "#ef4444"
+    },
+    "inflation-hedge": {
+      "name": "Inflation Hedge",
+      "description": "Protecting against currency debasement",
+      "overweight": ["commodity", "forex", "crypto"],
+      "underweight": ["bond"],
+      "indicators": {
+        "cpi": { "condition": "> 3.5%", "weight": 2 },
+        "bond_yield": { "condition": "< inflation", "weight": 2 },
+        "money_supply": { "condition": "YoY > 5%", "weight": 1 }
+      },
+      "color": "#f59e0b"
+    },
+    "growth": {
+      "name": "Growth",
+      "description": "Economic expansion, equities favored",
+      "overweight": ["index", "crypto"],
+      "underweight": ["bond", "commodity"],
+      "indicators": {
+        "gdp": { "condition": "> 2%", "weight": 2 },
+        "pmi": { "condition": "> 50", "weight": 1 },
+        "unemployment": { "condition": "< 5%", "weight": 1 }
+      },
+      "color": "#3b82f6"
+    },
+    "defensive": {
+      "name": "Defensive",
+      "description": "Recession protection, quality assets favored",
+      "overweight": ["bond", "forex"],
+      "underweight": ["crypto", "index", "commodity"],
+      "indicators": {
+        "yield_curve": { "condition": "inverted", "weight": 2 },
+        "leading_indicators": { "condition": "declining", "weight": 1 },
+        "corporate_earnings": { "condition": "downward revision", "weight": 1 }
+      },
+      "color": "#8b5cf6"
+    }
+  }
+}

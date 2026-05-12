@@ -1,0 +1,73 @@
+{
+  "id": "cycle-2024-05",
+  "cycle": "Monetary Policy Uncertainty Cycle",
+  "cycleStart": "2024-05-01",
+  "currentPhase": "risk-off",
+  "phases": [
+    {
+      "name": "Risk-Off Phase",
+      "trigger": "Fed rate hike concerns + banking stress",
+      "overweight": ["bond", "commodity"],
+      "underweight": ["crypto", "index"],
+      "startDate": "2024-05-01",
+      "status": "active"
+    },
+    {
+      "name": "Inflation Hedge Phase",
+      "trigger": "CPI > 3.5% + wage growth acceleration",
+      "overweight": ["commodity", "forex"],
+      "underweight": ["bond"],
+      "status": "upcoming"
+    },
+    {
+      "name": "Growth Phase",
+      "trigger": "Fed rate cut expectations + GDP > 2%",
+      "overweight": ["crypto", "index"],
+      "underweight": ["bond", "commodity"],
+      "status": "upcoming"
+    },
+    {
+      "name": "Defensive Phase",
+      "trigger": "Recession signals + yield curve inversion",
+      "overweight": ["bond", "forex"],
+      "underweight": ["crypto", "index", "commodity"],
+      "status": "upcoming"
+    }
+  ],
+  "narratives": [
+    {
+      "title": "Higher for Longer",
+      "description": "Federal Reserve maintains restrictive policy to combat inflation",
+      "drivers": [
+        "Core CPI above 3%",
+        "Strong labor market",
+        "Services inflation persistence"
+      ],
+      "assets": ["TLT", "GLD", "USDCNY"],
+      "status": "active"
+    },
+    {
+      "title": "AI Revolution",
+      "description": "Technology sector boom driven by artificial intelligence adoption",
+      "drivers": [
+        "NVIDIA earnings surge",
+        "Enterprise AI adoption",
+        "Productivity gains"
+      ],
+      "assets": ["SPY", "BTC", "ETH"],
+      "status": "active"
+    },
+    {
+      "title": "De-dollarization",
+      "description": "Global shift away from USD reserves in emerging markets",
+      "drivers": [
+        "BRICS currency discussions",
+        "Bilateral trade agreements",
+        "Gold reserve accumulation"
+      ],
+      "assets": ["GLD", "USDCNY", "BTC"],
+      "status": "fading"
+    }
+  ],
+  "lastUpdate": "2024-05-12T00:00:00Z"
+}

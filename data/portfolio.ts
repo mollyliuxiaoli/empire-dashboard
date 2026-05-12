@@ -1,4 +1,4 @@
-import { Holding, T0Target, Gold, Macro, PendingAction, History } from '@/types/portfolio';
+import { HoldingLegacy, T0Target, Gold, Macro, PendingAction, History } from '@/types/portfolio';
 import { calculatePortfolioSummary } from '@/lib/portfolio-calculations';
 
 // Legacy types kept for backward compatibility during migration
@@ -34,8 +34,8 @@ export interface ETFStock {
 // Cash balance - the 15,112 discrepancy mentioned in the review
 const cashBalance = 15112;
 
-// Unified holdings data using new Holding type
-export const holdings: Holding[] = [
+// Unified holdings data using legacy holding structure for v4 migration
+export const holdings: HoldingLegacy[] = [
   // Funds
   {
     code: "014368", name: "富国全球科技互联网股票(QDII)C", type: "QDII科技", assetCategory: "fund",

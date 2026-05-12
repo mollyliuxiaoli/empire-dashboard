@@ -1,0 +1,69 @@
+{
+  "templates": [
+    {
+      "id": "monetary-policy",
+      "title": "Monetary Policy Shift",
+      "description": "Central bank policy changes impact asset allocation",
+      "drivers": [
+        "Interest rate decisions",
+        "Balance sheet changes",
+        "Forward guidance"
+      ],
+      "affected_assets": ["all"],
+      "priority": "high",
+      "default_duration_days": 90
+    },
+    {
+      "id": "geopolitical-tension",
+      "title": "Geopolitical Risk Event",
+      "description": "International conflicts and trade tensions",
+      "drivers": [
+        "Military conflicts",
+        "Trade sanctions",
+        "Diplomatic crises"
+      ],
+      "affected_assets": ["commodity", "forex", "bond"],
+      "priority": "critical",
+      "default_duration_days": 30
+    },
+    {
+      "id": "tech-breakthrough",
+      "title": "Technology Breakthrough",
+      "description": "Major innovation drives sector rotation",
+      "drivers": [
+        "AI/ML advances",
+        "Biotech breakthroughs",
+        "Energy innovations"
+      ],
+      "affected_assets": ["index", "crypto"],
+      "priority": "medium",
+      "default_duration_days": 180
+    },
+    {
+      "id": "financial-crisis",
+      "title": "Financial Stress Event",
+      "description": "Banking system stress or credit crunch",
+      "drivers": [
+        "Bank failures",
+        "Credit spreads widening",
+        "Liquidity crunches"
+      ],
+      "affected_assets": ["bond", "forex", "commodity"],
+      "priority": "critical",
+      "default_duration_days": 60
+    },
+    {
+      "id": "inflation-surge",
+      "title": "Inflation Surge",
+      "description": "Rising prices force reallocation to hard assets",
+      "drivers": [
+        "CPI increases",
+        "Wage growth",
+        "Supply constraints"
+      ],
+      "affected_assets": ["commodity", "forex", "crypto"],
+      "priority": "high",
+      "default_duration_days": 120
+    }
+  ]
+}

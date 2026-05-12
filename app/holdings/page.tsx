@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { portfolioData, Fund, ETFStock } from '@/data/portfolio';
 import DashboardCard from '@/components/DashboardCard';
+import { holdingsAPI } from '@/lib/api/holdings-api';
+import { HoldingAsset } from '@/lib/api/api-structure';
 
 type TabType = 'funds' | 'etf' | 'gold';
 type SortType = 'amount' | 'change' | 'profit';
@@ -117,26 +119,48 @@ export default function HoldingsPage() {
     setShowFeedbackModal(true);
   };
 
-  const handleFeedbackSubmit = () => {
-    // 保存到localStorage
-    const formData = {
-      assetCode: selectedAsset!.code,
-      assetName: selectedAsset!.name,
-      operationType: (document.getElementById('operationType') as HTMLSelectElement).value,
-      price: parseFloat((document.getElementById('price') as HTMLInputElement).value),
-      amount: parseFloat((document.getElementById('amount') as HTMLInputElement).value),
-      fee: parseFloat((document.getElementById('fee') as HTMLInputElement).value) || 0,
-      note: (document.getElementById('note') as HTMLTextAreaElement).value,
-      timestamp: Date.now()
-    };
+  const handleFeedbackSubmit = async () => {
+    const operationType = (document.getElementById('operationType') as HTMLSelectElement).value;
+    const price = parseFloat((document.getElementById('price') as HTMLInputElement).value);
+    const amount = parseFloat((document.getElementById('amount') as HTMLInputElement).value);
+    const fee = parseFloat((document.getElementById('fee') as HTMLInputElement).value) || 0;
+    const note = (document.getElementById('note') as HTMLTextAreaElement).value;
 
-    const existingRecords = JSON.parse(localStorage.getItem('operationRecords') || '[]');
-    existingRecords.push(formData);
-    localStorage.setItem('operationRecords', JSON.stringify(existingRecords));
+    try {
+      let result;
+      if (operationType.includes('买入')) {
+        result = await holdingsAPI.addHolding({
+          symbol: selectedAsset!.code,
+          name: selectedAsset!.name,
+          assetType: 'stock',
+          quantity: amount,
+          averageCost: price
+        });
+      }
 
-    setShowFeedbackModal(false);
-    setSelectedAsset(null);
-    alert('操作反馈已保存');
+      // 保存操作记录
+      const formData = {
+        assetCode: selectedAsset!.code,
+        assetName: selectedAsset!.name,
+        operationType,
+        price,
+        amount,
+        fee,
+        note,
+        timestamp: Date.now()
+      };
+
+      const existingRecords = JSON.parse(localStorage.getItem('operationRecords') || '[]');
+      existingRecords.push(formData);
+      localStorage.setItem('operationRecords', JSON.stringify(existingRecords));
+
+      setShowFeedbackModal(false);
+      setSelectedAsset(null);
+      alert('操作反馈已保存');
+    } catch (error) {
+      console.error('Failed to save operation:', error);
+      alert('保存失败，请重试');
+    }
   };
 
   const handleAddPosition = () => {

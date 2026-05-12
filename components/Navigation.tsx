@@ -6,9 +6,9 @@ import Link from 'next/link';
 const navItems = [
   { href: '/', label: '总览', icon: '📊' },
   { href: '/holdings', label: '持仓', icon: '🎯' },
-  { href: '/trading', label: '做T', icon: '⚡' },
-  { href: '/macro', label: '宏观', icon: '🌍' },
-  { href: '/logs', label: '日志', icon: '📋' },
+  { href: '/actions', label: '行动', icon: '⚡' },
+  { href: '/market', label: '市场', icon: '🌍' },
+  { href: '/profile', label: '我的', icon: '👤' },
 ];
 
 export default function Navigation() {
@@ -50,8 +50,8 @@ export default function Navigation() {
       {/* Desktop sidebar navigation */}
       <nav className="hidden lg:flex fixed left-0 top-0 bottom-0 w-64 bg-background/95 backdrop-blur-sm border-r border-border flex-col z-50">
         <div className="p-6 border-b border-border">
-          <h1 className="text-2xl font-bold text-gold">InvestScope 投资看板</h1>
-          <p className="text-xs text-slate-500 mt-1">内部代号：帝国操盘室</p>
+          <h1 className="text-2xl font-bold text-gold">InvestScope</h1>
+          <p className="text-xs text-slate-500 mt-1">投资看板</p>
         </div>
         <div className="flex-1 py-6 px-3 space-y-1">
           {navItems.map((item) => {

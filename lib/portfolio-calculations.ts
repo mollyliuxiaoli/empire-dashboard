@@ -3,13 +3,13 @@
  * Centralized calculation logic for portfolio data
  */
 
-import { Holding, PortfolioSummary, Gold } from '@/types/portfolio';
+import { HoldingLegacy, PortfolioSummary, Gold } from '@/types/portfolio';
 
 /**
  * Calculate portfolio summary from holdings and cash balance
  */
 export function calculatePortfolioSummary(
-  holdings: Holding[],
+  holdings: HoldingLegacy[],
   gold: Gold,
   cashBalance: number
 ): PortfolioSummary {
@@ -25,12 +25,22 @@ export function calculatePortfolioSummary(
   return {
     totalAssets,
     cashBalance,
-    todayChange: todayChangeAmount,
-    todayChangePercent,
     totalCost,
     totalMarketValue,
     totalProfit,
     totalProfitPercent,
+    // Legacy v3 field names
+    todayChange: todayChangeAmount,
+    todayChangePercent,
+    // New v4 field names (aliases)
+    todayPnlAmount: todayChangeAmount,
+    todayPnlPercent: todayChangePercent,
+    totalPnlAmount: totalProfit,
+    totalPnlPercent: totalProfitPercent,
+    totalBookCost: totalCost,
+    holdingsCount: 0,
+    profitableCount: 0,
+    losingCount: 0,
     asOf: new Date().toISOString()
   };
 }
@@ -39,7 +49,7 @@ export function calculatePortfolioSummary(
  * Calculate statistics for a specific asset category
  */
 export function calculateHoldingStats(
-  holdings: Holding[],
+  holdings: HoldingLegacy[],
   category: 'fund' | 'etf' | 'gold' | 'hk_stock' | 'us_stock'
 ): {
   count: number;

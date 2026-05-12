@@ -5,12 +5,12 @@
  * Future: Replace with real API calls
  */
 
-import { MarketData } from '@/types/portfolio';
+import { MarketDataResult } from '@/types/portfolio';
 
 /**
  * Get fund NAV (Net Asset Value)
  */
-export async function getFundNav(code: string): Promise<MarketData> {
+export async function getFundNav(code: string): Promise<MarketDataResult<any>> {
   // TODO: Replace with real API call
   // Mock data for now
   return {
@@ -22,14 +22,16 @@ export async function getFundNav(code: string): Promise<MarketData> {
     },
     asOf: new Date().toISOString(),
     source: '天天基金估值',
-    isMock: true
+    isMock: true,
+    stale: false,
+    cacheTtl: 0
   };
 }
 
 /**
  * Get ETF real-time quote
  */
-export async function getETFRealtime(code: string): Promise<MarketData> {
+export async function getETFRealtime(code: string): Promise<MarketDataResult<any>> {
   // TODO: Replace with real API call
   return {
     data: {
@@ -40,14 +42,16 @@ export async function getETFRealtime(code: string): Promise<MarketData> {
     },
     asOf: new Date().toISOString(),
     source: '实时行情',
-    isMock: true
+    isMock: true,
+    stale: false,
+    cacheTtl: 0
   };
 }
 
 /**
  * Get gold price
  */
-export async function getGoldPrice(): Promise<MarketData> {
+export async function getGoldPrice(): Promise<MarketDataResult<any>> {
   // TODO: Replace with real API call
   return {
     data: {
@@ -58,14 +62,16 @@ export async function getGoldPrice(): Promise<MarketData> {
     },
     asOf: new Date().toISOString(),
     source: '上海黄金交易所',
-    isMock: true
+    isMock: true,
+    stale: false,
+    cacheTtl: 0
   };
 }
 
 /**
  * Get exchange rate
  */
-export async function getExchangeRate(): Promise<MarketData> {
+export async function getExchangeRate(): Promise<MarketDataResult<any>> {
   // TODO: Replace with real API call
   return {
     data: {
@@ -75,14 +81,16 @@ export async function getExchangeRate(): Promise<MarketData> {
     },
     asOf: new Date().toISOString(),
     source: '中国外汇交易中心',
-    isMock: true
+    isMock: true,
+    stale: false,
+    cacheTtl: 0
   };
 }
 
 /**
  * Get sector rotation/money flow data
  */
-export async function getSectorData(): Promise<MarketData> {
+export async function getSectorData(): Promise<MarketDataResult<any>> {
   // TODO: Replace with real API call
   return {
     data: {
@@ -94,14 +102,16 @@ export async function getSectorData(): Promise<MarketData> {
     },
     asOf: new Date().toISOString(),
     source: '模拟数据',
-    isMock: true
+    isMock: true,
+    stale: false,
+    cacheTtl: 0
   };
 }
 
 /**
  * Get US market indices
  */
-export async function getUSMarketData(): Promise<MarketData> {
+export async function getUSMarketData(): Promise<MarketDataResult<any>> {
   // TODO: Replace with real API call
   return {
     data: {
@@ -111,14 +121,16 @@ export async function getUSMarketData(): Promise<MarketData> {
     },
     asOf: new Date().toISOString(),
     source: '模拟数据',
-    isMock: true
+    isMock: true,
+    stale: false,
+    cacheTtl: 0
   };
 }
 
 /**
  * Get commodity prices
  */
-export async function getCommodityData(): Promise<MarketData> {
+export async function getCommodityData(): Promise<MarketDataResult<any>> {
   // TODO: Replace with real API call
   return {
     data: {
@@ -129,6 +141,8 @@ export async function getCommodityData(): Promise<MarketData> {
     },
     asOf: new Date().toISOString(),
     source: '模拟数据',
-    isMock: true
+    isMock: true,
+    stale: false,
+    cacheTtl: 0
   };
 }
