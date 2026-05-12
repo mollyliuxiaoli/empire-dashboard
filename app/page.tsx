@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
 import DashboardCard from '@/components/DashboardCard';
-import { portfolioData, t0Targets } from '@/data/portfolio';
+import { portfolioData, t0Targets, usStocks, hkStocks } from '@/data/portfolio';
 
 export default function Home() {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -39,12 +39,20 @@ export default function Home() {
     })),
   ];
 
-  const totalAssets = portfolioData.totalAssets;
+  // 港美股折算（简化汇率）
+  const usdCny = 6.80; // USD/CNY
+  const hkdCny = 0.87; // HKD/CNY
+  const usStockValueCny = usStocks.reduce((s, u) => s + u.marketValue, 0) * usdCny;
+  const hkStockValueCny = hkStocks.reduce((s, h) => s + h.marketValue, 0) * hkdCny;
+  const usStockPnlCny = usStocks.reduce((s, u) => s + u.pnl, 0) * usdCny;
+  const hkStockPnlCny = hkStocks.reduce((s, h) => s + h.pnl, 0) * hkdCny;
+
+  const totalAssets = portfolioData.totalAssets + usStockValueCny + hkStockValueCny;
   const todayChange = portfolioData.todayChange;
   const todayChangePercent = portfolioData.todayChangePercent;
 
   // 总盈亏 = 所有标的盈亏之和
-  const totalPnl = allItems.reduce((sum, item) => sum + item.unrealizedPnlAmount, 0);
+  const totalPnl = allItems.reduce((sum, item) => sum + item.unrealizedPnlAmount, 0) + usStockPnlCny + hkStockPnlCny;
   const totalPnlPercent = allItems.reduce((sum, item) => sum + item.marketValue, 0);
   const totalPnlPct = totalPnlPercent > 0 ? (totalPnl / totalPnlPercent) * 100 : 0;
 
@@ -61,11 +69,13 @@ export default function Home() {
     { name: 'A股基金', value: aValue },
     { name: '固收/红利', value: bondValue },
     { name: 'ETF', value: etfValue },
+    { name: '🇺🇸美股', value: usStockValueCny },
+    { name: '🇭🇰港股', value: hkStockValueCny },
     { name: '黄金', value: goldValue },
     { name: '现金', value: cashValue },
   ].filter(d => d.value > 0);
 
-  const COLORS = ['#D4AF37', '#ef4444', '#22c55e', '#3b82f6', '#f59e0b', '#8b5cf6'];
+  const COLORS = ['#D4AF37', '#ef4444', '#22c55e', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#6b7280'];
 
   // 排行
   const sortedByPercent = [...allItems].sort((a, b) => b.dailyChange - a.dailyChange);

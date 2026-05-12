@@ -32,7 +32,7 @@ export const usStocks: USStock[] = [
   { name: "JPMorgan Equity Premium", code: "JEPI", price: 55.82, costPrice: 56.67, shares: 171, marketValue: 9545.39, pnl: -141.89 },
   { name: "迈威尔科技", code: "MRVL", price: 165.38, costPrice: 167.55, shares: 8, marketValue: 1323.04, pnl: -14.14 },
   { name: "Oklo Inc.", code: "OKLO", price: 75.95, costPrice: 72.93, shares: 30, marketValue: 2278.50, pnl: 145.99 },
-  { name: "甲骨文", code: "ORCL", price: 191.49, costPrice: 235.11, shares: 62, marketValue: 11936.38, pnl: -2675.95 },
+  { name: "甲骨文", code: "ORCL", price: 191.49, costPrice: 235.11, shares: 62.33, marketValue: 11936.38, pnl: -2675.95 },
   { name: "辉瑞", code: "PFE", price: 25.82, costPrice: 26.36, shares: 61, marketValue: 1575.02, pnl: -9.47 },
   { name: "X-Energy", code: "XE", price: 32.71, costPrice: 31.16, shares: 184, marketValue: 6018.24, pnl: 258.04 },
 ];
