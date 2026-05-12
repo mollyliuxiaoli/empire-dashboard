@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { portfolioData, Fund, ETFStock } from '@/data/portfolio';
+import { portfolioData, Fund, ETFStock, usStocks, hkStocks, USStock, HKStock } from '@/data/portfolio';
 import DashboardCard from '@/components/DashboardCard';
 import { holdingsAPI } from '@/lib/api/holdings-api';
 import { HoldingAsset } from '@/lib/api/api-structure';
 
-type TabType = 'funds' | 'etf' | 'gold';
+type TabType = 'funds' | 'etf' | 'us' | 'hk' | 'gold';
 type SortType = 'amount' | 'change' | 'profit';
 
 interface OperationRecord {
@@ -214,6 +214,26 @@ export default function HoldingsPage() {
             }`}
           >
             ETF ({portfolioData.etfStocks.length}只)
+          </button>
+          <button
+            onClick={() => setActiveTab('us')}
+            className={`px-6 py-3 rounded-lg text-sm font-medium transition-colors ${
+              activeTab === 'us'
+                ? 'bg-gold text-black'
+                : 'bg-card text-gray-400 hover:text-white border border-border'
+            }`}
+          >
+            🇺🇸 美股 ({usStocks.length}只)
+          </button>
+          <button
+            onClick={() => setActiveTab('hk')}
+            className={`px-6 py-3 rounded-lg text-sm font-medium transition-colors ${
+              activeTab === 'hk'
+                ? 'bg-gold text-black'
+                : 'bg-card text-gray-400 hover:text-white border border-border'
+            }`}
+          >
+            🇭🇰 港股 ({hkStocks.length}只)
           </button>
           <button
             onClick={() => setActiveTab('gold')}
@@ -460,6 +480,122 @@ export default function HoldingsPage() {
             </div>
           </div>
         </DashboardCard>
+      )}
+
+      {/* 美股持仓 (Tiger账户) */}
+      {activeTab === 'us' && (
+        <div className="space-y-4">
+          <div className="bg-card backdrop-blur-sm rounded-xl border border-border p-4 mb-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div>
+                <div className="text-xs text-gray-400 mb-1">持仓数量</div>
+                <div className="text-lg font-bold text-white">{usStocks.length} 只</div>
+              </div>
+              <div>
+                <div className="text-xs text-gray-400 mb-1">总市值</div>
+                <div className="text-lg font-bold text-white">${usStocks.reduce((s, u) => s + u.marketValue, 0).toLocaleString()}</div>
+              </div>
+              <div>
+                <div className="text-xs text-gray-400 mb-1">总盈亏</div>
+                <div className={`text-lg font-bold ${usStocks.reduce((s, u) => s + u.pnl, 0) >= 0 ? 'text-up' : 'text-down'}`}>
+                  ${usStocks.reduce((s, u) => s + u.pnl, 0).toLocaleString()}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-gray-400 mb-1">账户</div>
+                <div className="text-sm font-medium text-gold">🐅 Tiger</div>
+              </div>
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left py-3 px-2 text-sm text-gray-400">名称</th>
+                  <th className="text-left py-3 px-2 text-sm text-gray-400">代码</th>
+                  <th className="text-right py-3 px-2 text-sm text-gray-400">现价</th>
+                  <th className="text-right py-3 px-2 text-sm text-gray-400">成本</th>
+                  <th className="text-right py-3 px-2 text-sm text-gray-400">持仓</th>
+                  <th className="text-right py-3 px-2 text-sm text-gray-400">市值</th>
+                  <th className="text-right py-3 px-2 text-sm text-gray-400">盈亏</th>
+                </tr>
+              </thead>
+              <tbody>
+                {usStocks.map((stock) => (
+                  <tr key={stock.code} className="border-b border-border hover:bg-white/5">
+                    <td className="py-3 px-2 text-sm text-white">{stock.name}</td>
+                    <td className="py-3 px-2 text-sm text-gray-400">{stock.code}</td>
+                    <td className="py-3 px-2 text-sm text-right text-white">${stock.price.toFixed(2)}</td>
+                    <td className="py-3 px-2 text-sm text-right text-gray-400">${stock.costPrice.toFixed(2)}</td>
+                    <td className="py-3 px-2 text-sm text-right text-white">{stock.shares}</td>
+                    <td className="py-3 px-2 text-sm text-right text-white">${stock.marketValue.toLocaleString()}</td>
+                    <td className={`py-3 px-2 text-sm text-right font-medium ${stock.pnl >= 0 ? 'text-up' : 'text-down'}`}>
+                      {stock.pnl >= 0 ? '+' : ''}${stock.pnl.toLocaleString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* 港股持仓 (Tiger账户) */}
+      {activeTab === 'hk' && (
+        <div className="space-y-4">
+          <div className="bg-card backdrop-blur-sm rounded-xl border border-border p-4 mb-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div>
+                <div className="text-xs text-gray-400 mb-1">持仓数量</div>
+                <div className="text-lg font-bold text-white">{hkStocks.length} 只</div>
+              </div>
+              <div>
+                <div className="text-xs text-gray-400 mb-1">总市值</div>
+                <div className="text-lg font-bold text-white">HK${hkStocks.reduce((s, h) => s + h.marketValue, 0).toLocaleString()}</div>
+              </div>
+              <div>
+                <div className="text-xs text-gray-400 mb-1">总盈亏</div>
+                <div className={`text-lg font-bold ${hkStocks.reduce((s, h) => s + h.pnl, 0) >= 0 ? 'text-up' : 'text-down'}`}>
+                  HK${hkStocks.reduce((s, h) => s + h.pnl, 0).toLocaleString()}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-gray-400 mb-1">账户</div>
+                <div className="text-sm font-medium text-gold">🐅 Tiger</div>
+              </div>
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left py-3 px-2 text-sm text-gray-400">名称</th>
+                  <th className="text-left py-3 px-2 text-sm text-gray-400">代码</th>
+                  <th className="text-right py-3 px-2 text-sm text-gray-400">现价</th>
+                  <th className="text-right py-3 px-2 text-sm text-gray-400">成本</th>
+                  <th className="text-right py-3 px-2 text-sm text-gray-400">持仓</th>
+                  <th className="text-right py-3 px-2 text-sm text-gray-400">市值</th>
+                  <th className="text-right py-3 px-2 text-sm text-gray-400">盈亏</th>
+                </tr>
+              </thead>
+              <tbody>
+                {hkStocks.map((stock) => (
+                  <tr key={stock.code} className="border-b border-border hover:bg-white/5">
+                    <td className="py-3 px-2 text-sm text-white">{stock.name}</td>
+                    <td className="py-3 px-2 text-sm text-gray-400">{stock.code}</td>
+                    <td className="py-3 px-2 text-sm text-right text-white">HK${stock.price.toFixed(3)}</td>
+                    <td className="py-3 px-2 text-sm text-right text-gray-400">HK${stock.costPrice.toFixed(3)}</td>
+                    <td className="py-3 px-2 text-sm text-right text-white">{stock.shares}</td>
+                    <td className="py-3 px-2 text-sm text-right text-white">HK${stock.marketValue.toLocaleString()}</td>
+                    <td className={`py-3 px-2 text-sm text-right font-medium ${stock.pnl >= 0 ? 'text-up' : 'text-down'}`}>
+                      {stock.pnl >= 0 ? '+' : ''}HK${stock.pnl.toLocaleString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       )}
 
       {/* 反馈模态框 */}
