@@ -27,8 +27,8 @@ export default function Home() {
       code: f.code, name: f.name, type: 'fund' as const,
       marketValue: f.amount, dailyChange: f.dailyChange,
       dailyPnlAmount: f.amount * f.dailyChange / 100,
-      unrealizedPnlAmount: f.amount * f.profit / 100,
-      unrealizedPnlPercent: f.profit,
+      unrealizedPnlAmount: f.profit,  // f.profit已经是实际盈亏金额，不是百分比
+      unrealizedPnlPercent: f.amount > 0 ? (f.profit / (f.amount - f.profit)) * 100 : 0,
     })),
     ...portfolioData.etfStocks.map(e => ({
       code: e.code, name: e.name, type: 'etf' as const,
@@ -53,8 +53,9 @@ export default function Home() {
 
   // 总盈亏 = 所有标的盈亏之和
   const totalPnl = allItems.reduce((sum, item) => sum + item.unrealizedPnlAmount, 0) + usStockPnlCny + hkStockPnlCny;
-  const totalPnlPercent = allItems.reduce((sum, item) => sum + item.marketValue, 0);
-  const totalPnlPct = totalPnlPercent > 0 ? (totalPnl / totalPnlPercent) * 100 : 0;
+  // 总成本 = 总市值 - 总盈亏
+  const totalCost = totalAssets - totalPnl;
+  const totalPnlPct = totalCost > 0 ? (totalPnl / totalCost) * 100 : 0;
 
   // 资产配比
   const qdiiValue = portfolioData.funds.filter(f => f.type.includes('QDII')).reduce((s, f) => s + f.amount, 0);

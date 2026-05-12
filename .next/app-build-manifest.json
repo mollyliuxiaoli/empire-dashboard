@@ -24,6 +24,13 @@
       "static/chunks/366-6cb033a68ee77677.js",
       "static/chunks/app/actions/page-1844a6f5546e047c.js"
     ],
+    "/logs/page": [
+      "static/chunks/webpack-ceb4478855ab868f.js",
+      "static/chunks/fd9d1056-49c3082a52c1caea.js",
+      "static/chunks/23-5c707f970be832e5.js",
+      "static/chunks/main-app-67b6bb47c3322d14.js",
+      "static/chunks/app/logs/page-7161e38b73ca8218.js"
+    ],
     "/holdings/page": [
       "static/chunks/webpack-ceb4478855ab868f.js",
       "static/chunks/fd9d1056-49c3082a52c1caea.js",
@@ -39,12 +46,14 @@
       "static/chunks/main-app-67b6bb47c3322d14.js",
       "static/chunks/app/macro/page-1116cd80d63d0be4.js"
     ],
-    "/logs/page": [
+    "/page": [
       "static/chunks/webpack-ceb4478855ab868f.js",
       "static/chunks/fd9d1056-49c3082a52c1caea.js",
       "static/chunks/23-5c707f970be832e5.js",
       "static/chunks/main-app-67b6bb47c3322d14.js",
-      "static/chunks/app/logs/page-7161e38b73ca8218.js"
+      "static/chunks/242-c4424e5737defab6.js",
+      "static/chunks/366-6cb033a68ee77677.js",
+      "static/chunks/app/page-d788e1560bda30d3.js"
     ],
     "/market/page": [
       "static/chunks/webpack-ceb4478855ab868f.js",
@@ -68,15 +77,6 @@
       "static/chunks/main-app-67b6bb47c3322d14.js",
       "static/chunks/366-6cb033a68ee77677.js",
       "static/chunks/app/trading/page-54c3c33beb10c498.js"
-    ],
-    "/page": [
-      "static/chunks/webpack-ceb4478855ab868f.js",
-      "static/chunks/fd9d1056-49c3082a52c1caea.js",
-      "static/chunks/23-5c707f970be832e5.js",
-      "static/chunks/main-app-67b6bb47c3322d14.js",
-      "static/chunks/242-c4424e5737defab6.js",
-      "static/chunks/366-6cb033a68ee77677.js",
-      "static/chunks/app/page-5cf263cf25bfe286.js"
     ],
     "/holdings/[code]/page": [
       "static/chunks/webpack-ceb4478855ab868f.js",
