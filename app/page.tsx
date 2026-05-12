@@ -73,7 +73,6 @@ export default function Home() {
     { name: '🇺🇸美股', value: usStockValueCny },
     { name: '🇭🇰港股', value: hkStockValueCny },
     { name: '黄金', value: goldValue },
-    { name: '现金', value: cashValue },
   ].filter(d => d.value > 0);
 
   const COLORS = ['#D4AF37', '#ef4444', '#22c55e', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#6b7280'];

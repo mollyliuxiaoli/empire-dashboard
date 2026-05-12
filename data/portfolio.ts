@@ -1,4 +1,4 @@
-import { HoldingLegacy, T0Target, Gold, Macro, PendingAction, History } from '@/types/portfolio';
+import { HoldingLegacy, T0Target, Gold, Macro, PendingAction, History, MarketIndex, SectorData } from '@/types/portfolio';
 import { calculatePortfolioSummary } from '@/lib/portfolio-calculations';
 
 export interface Fund {
@@ -249,6 +249,30 @@ export const gold: Gold = {
 };
 
 // ===== 宏观数据 =====
+export const aStockIndices: MarketIndex[] = [
+  { name: "上证指数", value: 3374.87, change: -0.21 },
+  { name: "深证成指", value: 10187.44, change: -0.45 },
+  { name: "创业板指", value: 2034.44, change: -0.82 },
+  { name: "科创50", value: 998.34, change: -1.03 },
+];
+
+export const hkStockIndices: MarketIndex[] = [
+  { name: "恒生指数", value: 22867.74, change: -0.31 },
+  { name: "恒生科技", value: 5123.67, change: -0.48 },
+  { name: "国企指数", value: 8234.56, change: -0.25 },
+];
+
+export const sectors: SectorData[] = [
+  { name: "半导体", change: -2.35, signal: "调整" },
+  { name: "人工智能", change: -1.82, signal: "回调" },
+  { name: "新能源", change: -1.45, signal: "弱势" },
+  { name: "消费", change: 0.32, signal: "稳定" },
+  { name: "医药", change: 0.56, signal: "反弹" },
+  { name: "金融", change: 0.78, signal: "偏强" },
+  { name: "地产", change: -0.89, signal: "调整" },
+  { name: "军工", change: -0.34, signal: "盘整" },
+];
+
 export const macro: Macro = {
   usStocks: {
     dowJones: { value: 49704.47, change: 0.19 },

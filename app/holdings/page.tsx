@@ -112,7 +112,39 @@ export default function HoldingsPage() {
     };
   };
 
-  const stats = activeTab === 'funds' ? getFundsStats() : activeTab === 'etf' ? getETFStats() : getGoldStats();
+  const getUSStocksStats = () => {
+    const totalMarketValue = usStocks.reduce((sum, s) => sum + s.marketValue, 0);
+    const totalPnl = usStocks.reduce((sum, s) => sum + s.pnl, 0);
+    const profitPercent = totalMarketValue > 0 ? (totalPnl / (totalMarketValue - totalPnl)) * 100 : 0;
+
+    return {
+      count: usStocks.length,
+      totalAmount: totalMarketValue,
+      totalProfit: totalPnl,
+      profitPercent,
+      todayChange: 0
+    };
+  };
+
+  const getHKStocksStats = () => {
+    const totalMarketValue = hkStocks.reduce((sum, s) => sum + s.marketValue, 0);
+    const totalPnl = hkStocks.reduce((sum, s) => sum + s.pnl, 0);
+    const profitPercent = totalMarketValue > 0 ? (totalPnl / (totalMarketValue - totalPnl)) * 100 : 0;
+
+    return {
+      count: hkStocks.length,
+      totalAmount: totalMarketValue,
+      totalProfit: totalPnl,
+      profitPercent,
+      todayChange: 0
+    };
+  };
+
+  const stats = activeTab === 'funds' ? getFundsStats() :
+                activeTab === 'etf' ? getETFStats() :
+                activeTab === 'us' ? getUSStocksStats() :
+                activeTab === 'hk' ? getHKStocksStats() :
+                getGoldStats();
 
   const handleFeedback = (asset: Fund | ETFStock) => {
     setSelectedAsset(asset);
@@ -248,30 +280,32 @@ export default function HoldingsPage() {
         </div>
 
         {/* 统计概览 */}
-        <div className="bg-card backdrop-blur-sm rounded-xl border border-border p-4 mb-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div>
-              <div className="text-xs text-gray-400 mb-1">持仓数量</div>
-              <div className="text-lg font-bold text-white">{stats.count} 只</div>
-            </div>
-            <div>
-              <div className="text-xs text-gray-400 mb-1">总金额</div>
-              <div className="text-lg font-bold text-white">¥{stats.totalAmount.toLocaleString()}</div>
-            </div>
-            <div>
-              <div className="text-xs text-gray-400 mb-1">累计盈亏</div>
-              <div className={`text-lg font-bold ${stats.totalProfit >= 0 ? 'text-up' : 'text-down'}`}>
-                {stats.totalProfit >= 0 ? '+' : ''}{stats.profitPercent.toFixed(1)}%
+        {activeTab !== 'us' && activeTab !== 'hk' && (
+          <div className="bg-card backdrop-blur-sm rounded-xl border border-border p-4 mb-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div>
+                <div className="text-xs text-gray-400 mb-1">持仓数量</div>
+                <div className="text-lg font-bold text-white">{stats.count} 只</div>
               </div>
-            </div>
-            <div>
-              <div className="text-xs text-gray-400 mb-1">今日盈亏</div>
-              <div className={`text-lg font-bold ${stats.todayChange >= 0 ? 'text-up' : 'text-down'}`}>
-                {stats.todayChange >= 0 ? '+' : ''}{stats.todayChange.toFixed(2)}%
+              <div>
+                <div className="text-xs text-gray-400 mb-1">总金额</div>
+                <div className="text-lg font-bold text-white">¥{stats.totalAmount.toLocaleString()}</div>
+              </div>
+              <div>
+                <div className="text-xs text-gray-400 mb-1">累计盈亏</div>
+                <div className={`text-lg font-bold ${stats.totalProfit >= 0 ? 'text-up' : 'text-down'}`}>
+                  {stats.totalProfit >= 0 ? '+' : ''}{stats.profitPercent.toFixed(1)}%
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-gray-400 mb-1">今日盈亏</div>
+                <div className={`text-lg font-bold ${stats.todayChange >= 0 ? 'text-up' : 'text-down'}`}>
+                  {stats.todayChange >= 0 ? '+' : ''}{stats.todayChange.toFixed(2)}%
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* 排序按钮 */}
         <div className="flex justify-end gap-2">
@@ -484,117 +518,103 @@ export default function HoldingsPage() {
 
       {/* 美股持仓 (Tiger账户) */}
       {activeTab === 'us' && (
-        <div className="space-y-4">
-          <div className="bg-card backdrop-blur-sm rounded-xl border border-border p-4 mb-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div>
-                <div className="text-xs text-gray-400 mb-1">持仓数量</div>
-                <div className="text-lg font-bold text-white">{usStocks.length} 只</div>
-              </div>
-              <div>
-                <div className="text-xs text-gray-400 mb-1">总市值</div>
-                <div className="text-lg font-bold text-white">${usStocks.reduce((s, u) => s + u.marketValue, 0).toLocaleString()}</div>
-              </div>
-              <div>
-                <div className="text-xs text-gray-400 mb-1">总盈亏</div>
-                <div className={`text-lg font-bold ${usStocks.reduce((s, u) => s + u.pnl, 0) >= 0 ? 'text-up' : 'text-down'}`}>
-                  ${usStocks.reduce((s, u) => s + u.pnl, 0).toLocaleString()}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {usStocks.map((stock) => (
+            <DashboardCard
+              key={stock.code}
+              className="cursor-pointer hover:border-gold/50 transition-colors"
+              onClick={() => router.push(`/holdings/${stock.code}`)}
+            >
+              <div className="flex justify-between items-start mb-3">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="text-base font-semibold text-white truncate">{stock.name}</h3>
+                    <span className={`text-xs px-2 py-0.5 rounded flex-shrink-0 ${
+                      stock.pnl >= 0 ? 'bg-up/20 text-up' : 'bg-down/20 text-down'
+                    }`}>
+                      {stock.pnl >= 0 ? '+' : ''}{(stock.pnl / (stock.marketValue - stock.pnl) * 100).toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-400">
+                    <span className="mr-2">{stock.code}</span>
+                    <span>🇺🇸美股</span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-lg font-bold text-white">${stock.price.toFixed(2)}</div>
                 </div>
               </div>
-              <div>
-                <div className="text-xs text-gray-400 mb-1">账户</div>
-                <div className="text-sm font-medium text-gold">🐅 Tiger</div>
+
+              <div className="grid grid-cols-2 gap-2 text-xs mb-3">
+                <div>
+                  <div className="text-gray-400">持仓</div>
+                  <div className="text-white font-medium">{stock.shares}股</div>
+                </div>
+                <div>
+                  <div className="text-gray-400">市值</div>
+                  <div className="text-white font-medium">${stock.marketValue.toLocaleString()}</div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left py-3 px-2 text-sm text-gray-400">名称</th>
-                  <th className="text-left py-3 px-2 text-sm text-gray-400">代码</th>
-                  <th className="text-right py-3 px-2 text-sm text-gray-400">现价</th>
-                  <th className="text-right py-3 px-2 text-sm text-gray-400">成本</th>
-                  <th className="text-right py-3 px-2 text-sm text-gray-400">持仓</th>
-                  <th className="text-right py-3 px-2 text-sm text-gray-400">市值</th>
-                  <th className="text-right py-3 px-2 text-sm text-gray-400">盈亏</th>
-                </tr>
-              </thead>
-              <tbody>
-                {usStocks.map((stock) => (
-                  <tr key={stock.code} className="border-b border-border hover:bg-white/5">
-                    <td className="py-3 px-2 text-sm text-white">{stock.name}</td>
-                    <td className="py-3 px-2 text-sm text-gray-400">{stock.code}</td>
-                    <td className="py-3 px-2 text-sm text-right text-white">${stock.price.toFixed(2)}</td>
-                    <td className="py-3 px-2 text-sm text-right text-gray-400">${stock.costPrice.toFixed(2)}</td>
-                    <td className="py-3 px-2 text-sm text-right text-white">{stock.shares}</td>
-                    <td className="py-3 px-2 text-sm text-right text-white">${stock.marketValue.toLocaleString()}</td>
-                    <td className={`py-3 px-2 text-sm text-right font-medium ${stock.pnl >= 0 ? 'text-up' : 'text-down'}`}>
-                      {stock.pnl >= 0 ? '+' : ''}${stock.pnl.toLocaleString()}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+
+              <div className="border-t border-border pt-3 flex justify-between items-center">
+                <div className="text-xs text-gray-400">🐅 Tiger</div>
+                <div className={`text-sm font-medium ${stock.pnl >= 0 ? 'text-up' : 'text-down'}`}>
+                  {stock.pnl >= 0 ? '+' : ''}${stock.pnl.toLocaleString()}
+                </div>
+              </div>
+            </DashboardCard>
+          ))}
         </div>
       )}
 
       {/* 港股持仓 (Tiger账户) */}
       {activeTab === 'hk' && (
-        <div className="space-y-4">
-          <div className="bg-card backdrop-blur-sm rounded-xl border border-border p-4 mb-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div>
-                <div className="text-xs text-gray-400 mb-1">持仓数量</div>
-                <div className="text-lg font-bold text-white">{hkStocks.length} 只</div>
-              </div>
-              <div>
-                <div className="text-xs text-gray-400 mb-1">总市值</div>
-                <div className="text-lg font-bold text-white">HK${hkStocks.reduce((s, h) => s + h.marketValue, 0).toLocaleString()}</div>
-              </div>
-              <div>
-                <div className="text-xs text-gray-400 mb-1">总盈亏</div>
-                <div className={`text-lg font-bold ${hkStocks.reduce((s, h) => s + h.pnl, 0) >= 0 ? 'text-up' : 'text-down'}`}>
-                  HK${hkStocks.reduce((s, h) => s + h.pnl, 0).toLocaleString()}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {hkStocks.map((stock) => (
+            <DashboardCard
+              key={stock.code}
+              className="cursor-pointer hover:border-gold/50 transition-colors"
+              onClick={() => router.push(`/holdings/${stock.code}`)}
+            >
+              <div className="flex justify-between items-start mb-3">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="text-base font-semibold text-white truncate">{stock.name}</h3>
+                    <span className={`text-xs px-2 py-0.5 rounded flex-shrink-0 ${
+                      stock.pnl >= 0 ? 'bg-up/20 text-up' : 'bg-down/20 text-down'
+                    }`}>
+                      {stock.pnl >= 0 ? '+' : ''}{(stock.pnl / (stock.marketValue - stock.pnl) * 100).toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-400">
+                    <span className="mr-2">{stock.code}</span>
+                    <span>🇭🇰港股</span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-lg font-bold text-white">HK${stock.price.toFixed(3)}</div>
                 </div>
               </div>
-              <div>
-                <div className="text-xs text-gray-400 mb-1">账户</div>
-                <div className="text-sm font-medium text-gold">🐅 Tiger</div>
+
+              <div className="grid grid-cols-2 gap-2 text-xs mb-3">
+                <div>
+                  <div className="text-gray-400">持仓</div>
+                  <div className="text-white font-medium">{stock.shares}股</div>
+                </div>
+                <div>
+                  <div className="text-gray-400">市值</div>
+                  <div className="text-white font-medium">HK${stock.marketValue.toLocaleString()}</div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left py-3 px-2 text-sm text-gray-400">名称</th>
-                  <th className="text-left py-3 px-2 text-sm text-gray-400">代码</th>
-                  <th className="text-right py-3 px-2 text-sm text-gray-400">现价</th>
-                  <th className="text-right py-3 px-2 text-sm text-gray-400">成本</th>
-                  <th className="text-right py-3 px-2 text-sm text-gray-400">持仓</th>
-                  <th className="text-right py-3 px-2 text-sm text-gray-400">市值</th>
-                  <th className="text-right py-3 px-2 text-sm text-gray-400">盈亏</th>
-                </tr>
-              </thead>
-              <tbody>
-                {hkStocks.map((stock) => (
-                  <tr key={stock.code} className="border-b border-border hover:bg-white/5">
-                    <td className="py-3 px-2 text-sm text-white">{stock.name}</td>
-                    <td className="py-3 px-2 text-sm text-gray-400">{stock.code}</td>
-                    <td className="py-3 px-2 text-sm text-right text-white">HK${stock.price.toFixed(3)}</td>
-                    <td className="py-3 px-2 text-sm text-right text-gray-400">HK${stock.costPrice.toFixed(3)}</td>
-                    <td className="py-3 px-2 text-sm text-right text-white">{stock.shares}</td>
-                    <td className="py-3 px-2 text-sm text-right text-white">HK${stock.marketValue.toLocaleString()}</td>
-                    <td className={`py-3 px-2 text-sm text-right font-medium ${stock.pnl >= 0 ? 'text-up' : 'text-down'}`}>
-                      {stock.pnl >= 0 ? '+' : ''}HK${stock.pnl.toLocaleString()}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+
+              <div className="border-t border-border pt-3 flex justify-between items-center">
+                <div className="text-xs text-gray-400">🐅 Tiger</div>
+                <div className={`text-sm font-medium ${stock.pnl >= 0 ? 'text-up' : 'text-down'}`}>
+                  {stock.pnl >= 0 ? '+' : ''}HK${stock.pnl.toLocaleString()}
+                </div>
+              </div>
+            </DashboardCard>
+          ))}
         </div>
       )}
 

@@ -212,3 +212,15 @@ export interface MarketDataResult<T> {
   cacheTtl: number;
   error?: string;
 }
+
+export interface MarketIndex {
+  name: string;
+  value: number;
+  change: number;
+}
+
+export interface SectorData {
+  name: string;
+  change: number;
+  signal: string;
+}
