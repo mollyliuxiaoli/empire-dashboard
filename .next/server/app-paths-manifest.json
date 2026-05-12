@@ -1,9 +1,9 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/logs/page": "app/logs/page.js",
-  "/macro/page": "app/macro/page.js",
   "/holdings/page": "app/holdings/page.js",
   "/page": "app/page.js",
+  "/logs/page": "app/logs/page.js",
+  "/macro/page": "app/macro/page.js",
   "/trading/page": "app/trading/page.js",
   "/holdings/[code]/page": "app/holdings/[code]/page.js"
 }

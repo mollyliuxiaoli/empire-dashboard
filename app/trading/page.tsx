@@ -120,7 +120,7 @@ export default function TradingPage() {
 
         {/* 纪律提示 */}
         <div className="lg:col-span-1">
-          <DashboardCard title="纪律铁律" icon="⚠️">
+          <DashboardCard title="交易纪律" icon="⚠️">
             <div className="space-y-4">
               <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
                 <h4 className="text-red-400 font-semibold mb-2">🚨 严格止损</h4>

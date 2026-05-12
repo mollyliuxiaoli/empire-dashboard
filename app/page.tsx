@@ -6,6 +6,9 @@ import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis
 import DashboardCard from '@/components/DashboardCard';
 import { portfolioData } from '@/data/portfolio';
 
+// Note: For better performance, these could be dynamically imported with:
+// const PieChart = dynamic(() => import('recharts').then(m => ({ default: m.PieChart })), { ssr: false });
+
 export default function Home() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [leaderboardTab, setLeaderboardTab] = useState<'amount' | 'percentage'>('percentage');

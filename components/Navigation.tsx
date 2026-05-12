@@ -14,19 +14,27 @@ const navItems = [
 export default function Navigation() {
   const pathname = usePathname();
 
+  // Check if a path should be active (supports nested routes)
+  const isActive = (href: string) => {
+    if (href === '/') {
+      return pathname === '/';
+    }
+    return pathname.startsWith(href);
+  };
+
   return (
     <>
       {/* Mobile bottom navigation */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border z-50">
         <div className="flex justify-around items-center py-2">
           {navItems.map((item) => {
-            const isActive = pathname === item.href;
+            const active = isActive(item.href);
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 className={`flex flex-col items-center px-3 py-1 rounded-lg transition-colors ${
-                  isActive
+                  active
                     ? 'text-gold bg-gold/10'
                     : 'text-gray-400 hover:text-gray-200'
                 }`}
@@ -42,17 +50,18 @@ export default function Navigation() {
       {/* Desktop sidebar navigation */}
       <nav className="hidden lg:flex fixed left-0 top-0 bottom-0 w-64 bg-background/95 backdrop-blur-sm border-r border-border flex-col z-50">
         <div className="p-6 border-b border-border">
-          <h1 className="text-2xl font-bold text-gold">👑 帝国操盘室</h1>
+          <h1 className="text-2xl font-bold text-gold">InvestScope 投资看板</h1>
+          <p className="text-xs text-slate-500 mt-1">内部代号：帝国操盘室</p>
         </div>
         <div className="flex-1 py-6 px-3 space-y-1">
           {navItems.map((item) => {
-            const isActive = pathname === item.href;
+            const active = isActive(item.href);
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
-                  isActive
+                  active
                     ? 'text-gold bg-gold/10'
                     : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
                 }`}
@@ -62,6 +71,15 @@ export default function Navigation() {
               </Link>
             );
           })}
+        </div>
+        <div className="p-3 border-t border-border">
+          <Link
+            href="/settings"
+            className="flex items-center px-4 py-3 rounded-lg transition-colors text-gray-400 hover:text-gray-200 hover:bg-white/5"
+          >
+            <span className="text-2xl mr-3">⚙️</span>
+            <span className="text-lg">设置</span>
+          </Link>
         </div>
       </nav>
     </>
