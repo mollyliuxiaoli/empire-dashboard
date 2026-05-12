@@ -106,8 +106,9 @@ export const portfolioData = {
   t0Targets: [
     { code: "513130", name: "恒生科技ETF", price: 0.640, dailyChange: -0.16, amplitude: 1.09, t0Score: 3, status: "观望", signal: "相对抗跌，可观望尾盘机会" },
     { code: "513100", name: "纳指ETF", price: 2.093, dailyChange: -0.71, amplitude: 1.00, t0Score: 2, status: "偏弱", signal: "纳指新高但涨幅收窄" },
-    { code: "159819", name: "跨境半导体ETF", price: 1.941, dailyChange: -0.36, amplitude: 1.69, t0Score: 4, status: "关注", signal: "振幅大适合做T" },
-    { code: "513520", name: "日经ETF", price: 2.143, dailyChange: -0.19, amplitude: 1.26, t0Score: 2, status: "观望", signal: "波动一般" }
+    { code: "159819", name: "人工智能ETF易方达", price: 1.941, dailyChange: -0.36, amplitude: 1.69, t0Score: 4, status: "关注", signal: "振幅大适合做T" },
+    { code: "513520", name: "日经ETF华夏", price: 2.143, dailyChange: -0.19, amplitude: 1.26, t0Score: 2, status: "观望", signal: "波动一般" },
+    { code: "159616", name: "农牧ETF建信", price: 0.901, dailyChange: -0.55, amplitude: 1.20, t0Score: 3, status: "关注", signal: "农业板块轮动机会" }
   ] as T0Target[],
 
   gold: {
