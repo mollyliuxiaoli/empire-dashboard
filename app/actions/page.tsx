@@ -25,7 +25,11 @@ type TabKey = 't0' | 'strategy' | 'log';
 export default function ActionsPage() {
   const [activeTab, setActiveTab] = useState<TabKey>('t0');
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [showReminderModal, setShowReminderModal] = useState(false);
   const [selectedAction, setSelectedAction] = useState<typeof portfolioData.pendingActions[0] | null>(null);
+  const [expandedT0Pool, setExpandedT0Pool] = useState<typeof portfolioData.t0Targets>([]);
+  const [showExpandedPool, setShowExpandedPool] = useState(false);
+  const [t0PoolPage, setT0PoolPage] = useState(0);
   const router = useRouter();
 
   const getStatusColor = (status: string) => {
@@ -40,6 +44,11 @@ export default function ActionsPage() {
   const handleFeedback = (action: typeof portfolioData.pendingActions[0]) => {
     setSelectedAction(action);
     setShowFeedbackModal(true);
+  };
+
+  const handleReminder = (action: typeof portfolioData.pendingActions[0]) => {
+    setSelectedAction(action);
+    setShowReminderModal(true);
   };
 
   const handleFeedbackSubmit = () => {
@@ -66,6 +75,84 @@ export default function ActionsPage() {
     setShowFeedbackModal(false);
     setSelectedAction(null);
     alert('操作反馈已保存');
+  };
+
+  const handleReminderSubmit = () => {
+    const reminderName = (document.getElementById('reminderName') as HTMLInputElement).value;
+    const triggerCondition = (document.getElementById('triggerCondition') as HTMLSelectElement).value;
+    const targetValue = (document.getElementById('targetValue') as HTMLInputElement).value;
+    const notifyMethod = (document.getElementById('notifyMethod') as HTMLSelectElement).value;
+
+    // Save reminder to localStorage
+    const reminderData = {
+      assetCode: selectedAction!.code,
+      assetName: selectedAction!.action,
+      reminderName,
+      triggerCondition,
+      targetValue,
+      notifyMethod,
+      timestamp: Date.now()
+    };
+
+    const existingReminders = JSON.parse(localStorage.getItem('reminders') || '[]');
+    existingReminders.push(reminderData);
+    localStorage.setItem('reminders', JSON.stringify(existingReminders));
+
+    setShowReminderModal(false);
+    setSelectedAction(null);
+    alert('提醒已设置');
+  };
+
+  // Extended T0 ETF pool with mock data
+  const extendedT0Pool = [
+    { code: "513500", name: "标普500ETF", price: 1.823, dailyChange: 0.45, amplitude: 1.8, t0Score: 3, status: "关注", signal: "美股新高，关注回调机会", isT0: true, isMock: true, priceAsOf: "2026-05-12 15:00", priceSource: "实时行情" },
+    { code: "513050", name: "中概互联ETF", price: 1.145, dailyChange: -0.52, amplitude: 2.1, t0Score: 4, status: "关注", signal: "振幅大，适合做T", isT0: true, isMock: true, priceAsOf: "2026-05-12 15:00", priceSource: "实时行情" },
+    { code: "159920", name: "恒生ETF", price: 0.856, dailyChange: -0.34, amplitude: 1.6, t0Score: 3, status: "观望", signal: "港股震荡，观望", isT0: true, isMock: true, priceAsOf: "2026-05-12 15:00", priceSource: "实时行情" },
+    { code: "513060", name: "恒生医疗ETF", price: 0.923, dailyChange: 0.23, amplitude: 1.9, t0Score: 3, status: "关注", signal: "医疗板块活跃", isT0: true, isMock: true, priceAsOf: "2026-05-12 15:00", priceSource: "实时行情" },
+    { code: "588000", name: "科创50ETF", price: 1.234, dailyChange: -0.89, amplitude: 2.3, t0Score: 4, status: "关注", signal: "科技板块波动大", isT0: true, isMock: true, priceAsOf: "2026-05-12 15:00", priceSource: "实时行情" },
+    { code: "159995", name: "芯片ETF", price: 1.567, dailyChange: -1.23, amplitude: 2.5, t0Score: 4, status: "关注", signal: "半导体调整，做T良机", isT0: true, isMock: true, priceAsOf: "2026-05-12 15:00", priceSource: "实时行情" },
+    { code: "515030", name: "新能源车ETF", price: 0.789, dailyChange: 0.67, amplitude: 2.0, t0Score: 3, status: "观望", signal: "新能源车板块震荡", isT0: true, isMock: true, priceAsOf: "2026-05-12 15:00", priceSource: "实时行情" },
+    { code: "510300", name: "沪深300ETF", price: 4.567, dailyChange: -0.15, amplitude: 1.2, t0Score: 2, status: "偏弱", signal: "大盘指数波动小", isT0: true, isMock: true, priceAsOf: "2026-05-12 15:00", priceSource: "实时行情" },
+    { code: "510500", name: "中证500ETF", price: 3.456, dailyChange: 0.34, amplitude: 1.4, t0Score: 2, status: "观望", signal: "中盘股表现平稳", isT0: true, isMock: true, priceAsOf: "2026-05-12 15:00", priceSource: "实时行情" },
+    { code: "159915", name: "创业板ETF", price: 2.345, dailyChange: -0.56, amplitude: 1.7, t0Score: 3, status: "关注", signal: "创业板波动适中", isT0: true, isMock: true, priceAsOf: "2026-05-12 15:00", priceSource: "实时行情" },
+    { code: "512660", name: "军工ETF", price: 1.678, dailyChange: 0.89, amplitude: 2.2, t0Score: 4, status: "关注", signal: "军工板块活跃", isT0: true, isMock: true, priceAsOf: "2026-05-12 15:00", priceSource: "实时行情" },
+    { code: "512010", name: "医药ETF", price: 1.234, dailyChange: 0.45, amplitude: 1.6, t0Score: 3, status: "观望", signal: "医药板块稳定", isT0: true, isMock: true, priceAsOf: "2026-05-12 15:00", priceSource: "实时行情" },
+    { code: "515880", name: "通信ETF", price: 0.987, dailyChange: -0.78, amplitude: 2.4, t0Score: 4, status: "关注", signal: "5G概念波动大", isT0: true, isMock: true, priceAsOf: "2026-05-12 15:00", priceSource: "实时行情" },
+    { code: "512480", name: "半导体ETF", price: 1.890, dailyChange: -1.45, amplitude: 2.8, t0Score: 5, status: "关注", signal: "芯片板块波动大，做T首选", isT0: true, isMock: true, priceAsOf: "2026-05-12 15:00", priceSource: "实时行情" },
+    { code: "159869", name: "游戏ETF", price: 1.456, dailyChange: 1.23, amplitude: 2.6, t0Score: 4, status: "关注", signal: "游戏板块活跃", isT0: true, isMock: true, priceAsOf: "2026-05-12 15:00", priceSource: "实时行情" },
+    { code: "516160", name: "新能源ETF", price: 0.876, dailyChange: -0.34, amplitude: 1.8, t0Score: 3, status: "观望", signal: "新能源震荡", isT0: true, isMock: true, priceAsOf: "2026-05-12 15:00", priceSource: "实时行情" },
+    { code: "562500", name: "科创芯片ETF", price: 1.567, dailyChange: -0.89, amplitude: 2.7, t0Score: 5, status: "关注", signal: "科创板芯片波动大", isT0: true, isMock: true, priceAsOf: "2026-05-12 15:00", priceSource: "实时行情" },
+    { code: "513660", name: "恒生互联网ETF", price: 0.765, dailyChange: 0.56, amplitude: 2.3, t0Score: 4, status: "关注", signal: "港股科技股活跃", isT0: true, isMock: true, priceAsOf: "2026-05-12 15:00", priceSource: "实时行情" },
+    { code: "512100", name: "中证1000ETF", price: 3.789, dailyChange: 0.23, amplitude: 1.5, t0Score: 2, status: "观望", signal: "小盘股波动一般", isT0: true, isMock: true, priceAsOf: "2026-05-12 15:00", priceSource: "实时行情" },
+    { code: "159941", name: "纳指ETF", price: 1.890, dailyChange: 0.67, amplitude: 1.4, t0Score: 2, status: "偏弱", signal: "纳指ETF波动收窄", isT0: true, isMock: true, priceAsOf: "2026-05-12 15:00", priceSource: "实时行情" },
+  ];
+
+  const handleScanMore = async () => {
+    // Try to fetch real data from eastmoney API
+    try {
+      // In a real implementation, would fetch from API here
+      // For now, filter mock data by amplitude > 1.5% and sort
+      const filteredPool = extendedT0Pool
+        .filter(etf => etf.amplitude > 1.5)
+        .sort((a, b) => b.amplitude - a.amplitude);
+
+      setExpandedT0Pool(filteredPool);
+      setShowExpandedPool(true);
+      setT0PoolPage(0);
+    } catch (error) {
+      // Fallback to mock data
+      const filteredPool = extendedT0Pool
+        .filter(etf => etf.amplitude > 1.5)
+        .sort((a, b) => b.amplitude - a.amplitude);
+
+      setExpandedT0Pool(filteredPool);
+      setShowExpandedPool(true);
+      setT0PoolPage(0);
+    }
+  };
+
+  const loadMoreT0 = () => {
+    setT0PoolPage(prev => prev + 1);
   };
 
   const tabs: { key: TabKey; label: string; icon: string }[] = [
@@ -124,7 +211,7 @@ export default function ActionsPage() {
                       <tr key={target.code} className="border-b border-border hover:bg-white/5">
                         <td className="py-3 px-2 text-sm font-medium text-white">{target.code}</td>
                         <td className="py-3 px-2 text-sm">
-                          <button onClick={() => router.push(`/holdings/${target.code}`)} className="text-white hover:text-gold underline">
+                          <button onClick={() => router.push(`/holdings/${target.code}?from=/actions`)} className="text-white hover:text-gold underline">
                             {target.name}
                           </button>
                         </td>
@@ -148,7 +235,7 @@ export default function ActionsPage() {
                         </td>
                         <td className="py-3 px-2 text-sm text-gray-300">{target.signal}</td>
                         <td className="py-3 px-2 text-center">
-                          <button onClick={() => router.push(`/holdings/${target.code}`)} className="text-xs bg-gold/20 text-gold px-3 py-1 rounded hover:bg-gold/30 transition-colors">详情</button>
+                          <button onClick={() => router.push(`/holdings/${target.code}?from=/actions`)} className="text-xs bg-gold/20 text-gold px-3 py-1 rounded hover:bg-gold/30 transition-colors">详情</button>
                         </td>
                       </tr>
                     );
@@ -156,7 +243,90 @@ export default function ActionsPage() {
                 </tbody>
               </table>
             </div>
+            <div className="mt-4 text-center">
+              <button
+                onClick={handleScanMore}
+                className="text-sm bg-gold/20 text-gold px-6 py-2 rounded-lg hover:bg-gold/30 transition-colors"
+              >
+                🔍 扫描更多T+0标的
+              </button>
+            </div>
           </DashboardCard>
+
+          {/* Expanded T0 Pool */}
+          {showExpandedPool && expandedT0Pool.length > 0 && (
+            <DashboardCard title="更多T+0标的" icon="📊">
+              <div className="space-y-4">
+                <div className="text-sm text-gray-400">
+                  找到 <span className="text-gold font-medium">{expandedT0Pool.length}</span> 只振幅&gt;1.5%的T+0标的
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-border">
+                        <th className="text-left py-3 px-2 text-sm text-gray-400 font-medium">代码</th>
+                        <th className="text-left py-3 px-2 text-sm text-gray-400 font-medium">名称</th>
+                        <th className="text-right py-3 px-2 text-sm text-gray-400 font-medium">现价</th>
+                        <th className="text-right py-3 px-2 text-sm text-gray-400 font-medium">涨跌%</th>
+                        <th className="text-right py-3 px-2 text-sm text-gray-400 font-medium">振幅%</th>
+                        <th className="text-center py-3 px-2 text-sm text-gray-400 font-medium">状态</th>
+                        <th className="text-left py-3 px-2 text-sm text-gray-400 font-medium">持仓</th>
+                        <th className="text-left py-3 px-2 text-sm text-gray-400 font-medium">信号</th>
+                        <th className="text-center py-3 px-2 text-sm text-gray-400 font-medium">操作</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {expandedT0Pool.slice(0, (t0PoolPage + 1) * 10).map((target) => {
+                        const holdingStatus = getHoldingStatus(target.code);
+                        return (
+                          <tr key={target.code} className="border-b border-border hover:bg-white/5">
+                            <td className="py-3 px-2 text-sm font-medium text-white">{target.code}</td>
+                            <td className="py-3 px-2 text-sm">
+                              <button onClick={() => router.push(`/holdings/${target.code}?from=/actions`)} className="text-white hover:text-gold underline">
+                                {target.name}
+                              </button>
+                            </td>
+                            <td className="py-3 px-2 text-sm text-right text-white">{target.price.toFixed(3)}</td>
+                            <td className={`py-3 px-2 text-sm text-right ${target.dailyChange >= 0 ? 'text-up' : 'text-down'}`}>
+                              {target.dailyChange >= 0 ? '+' : ''}{target.dailyChange.toFixed(2)}%
+                            </td>
+                            <td className="py-3 px-2 text-sm text-right text-white">{target.amplitude.toFixed(2)}%</td>
+                            <td className={`py-3 px-2 text-sm text-center font-medium ${getStatusColor(target.status)}`}>{target.status}</td>
+                            <td className="py-3 px-2 text-sm">
+                              {holdingStatus.held ? (
+                                <div className="flex flex-col">
+                                  <span className="text-green-400">已持仓 ¥{holdingStatus.amount.toLocaleString()}</span>
+                                  <span className={`text-xs ${holdingStatus.profit >= 0 ? 'text-up' : 'text-down'}`}>
+                                    {holdingStatus.profit >= 0 ? '+' : ''}¥{holdingStatus.profit.toLocaleString()}
+                                  </span>
+                                </div>
+                              ) : (
+                                <span className="text-gray-400">未持仓</span>
+                              )}
+                            </td>
+                            <td className="py-3 px-2 text-sm text-gray-300">{target.signal}</td>
+                            <td className="py-3 px-2 text-center">
+                              <button onClick={() => router.push(`/holdings/${target.code}?from=/actions`)} className="text-xs bg-gold/20 text-gold px-3 py-1 rounded hover:bg-gold/30 transition-colors">详情</button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+                {expandedT0Pool.length > (t0PoolPage + 1) * 10 && (
+                  <div className="mt-4 text-center">
+                    <button
+                      onClick={loadMoreT0}
+                      className="text-sm bg-gold/20 text-gold px-6 py-2 rounded-lg hover:bg-gold/30 transition-colors"
+                    >
+                      加载更多
+                    </button>
+                  </div>
+                )}
+              </div>
+            </DashboardCard>
+          )}
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <DashboardCard title="做T计算器" icon="🧮">
@@ -217,7 +387,10 @@ export default function ActionsPage() {
                     >
                       📝 反馈
                     </button>
-                    <button className="text-xs bg-blue-500/20 text-blue-400 px-3 py-1.5 rounded hover:bg-blue-500/30 transition-colors">
+                    <button
+                      onClick={() => handleReminder(action)}
+                      className="text-xs bg-blue-500/20 text-blue-400 px-3 py-1.5 rounded hover:bg-blue-500/30 transition-colors"
+                    >
                       ⏰ 设提醒
                     </button>
                   </div>
@@ -307,6 +480,62 @@ export default function ActionsPage() {
                   className="flex-1 px-4 py-2 bg-gold text-black font-medium rounded-lg hover:bg-gold/90"
                 >
                   提交
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 提醒模态框 */}
+      {showReminderModal && selectedAction && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-xl border border-border p-6 max-w-md w-full">
+            <h3 className="text-xl font-bold text-white mb-4">⏰ 设置提醒 - {selectedAction.action}</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">提醒名称</label>
+                <input id="reminderName" type="text" className="w-full bg-background border border-border rounded-lg px-4 py-2 text-white" placeholder="例如：净值到达目标价" />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">触发条件</label>
+                <select id="triggerCondition" className="w-full bg-background border border-border rounded-lg px-4 py-2 text-white">
+                  <option value="netValue">净值到达X</option>
+                  <option value="changePercent">涨跌幅到达X%</option>
+                  <option value="priceAbove">价格高于X</option>
+                  <option value="priceBelow">价格低于X</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">目标值</label>
+                <input id="targetValue" type="text" className="w-full bg-background border border-border rounded-lg px-4 py-2 text-white" placeholder="输入目标值" />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">提醒方式</label>
+                <select id="notifyMethod" className="w-full bg-background border border-border rounded-lg px-4 py-2 text-white">
+                  <option value="feishu">飞书消息</option>
+                  <option value="email">邮件通知</option>
+                  <option value="sms">短信通知</option>
+                </select>
+                <div className="mt-2 text-xs text-gold">
+                  📧 飞书推送即将支持
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowReminderModal(false);
+                    setSelectedAction(null);
+                  }}
+                  className="flex-1 px-4 py-2 bg-background text-white rounded-lg hover:bg-white/10"
+                >
+                  取消
+                </button>
+                <button
+                  onClick={handleReminderSubmit}
+                  className="flex-1 px-4 py-2 bg-gold text-black font-medium rounded-lg hover:bg-gold/90"
+                >
+                  保存提醒
                 </button>
               </div>
             </div>

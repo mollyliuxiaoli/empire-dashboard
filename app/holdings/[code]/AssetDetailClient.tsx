@@ -9,6 +9,8 @@ import { portfolioData, t0Targets } from '@/data/portfolio';
 export default function AssetDetailClient() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+  const fromPath = searchParams.get('from') || '/holdings';
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 
@@ -43,7 +45,7 @@ export default function AssetDetailClient() {
       <div className="container mx-auto px-4 py-6">
         <div className="text-center py-20">
           <h1 className="text-2xl text-gray-400 mb-4">未找到标的</h1>
-          <button onClick={() => router.push('/holdings')} className="text-gold hover:underline">返回持仓列表</button>
+          <button onClick={() => router.push(fromPath)} className="text-gold hover:underline">返回持仓列表</button>
         </div>
       </div>
     );
@@ -70,7 +72,7 @@ export default function AssetDetailClient() {
   return (
     <div className="container mx-auto px-4 py-6">
       <div className="mb-6">
-        <button onClick={() => router.push('/holdings')} className="text-gold text-sm mb-4 hover:underline">← 返回持仓列表</button>
+        <button onClick={() => router.push(fromPath)} className="text-gold text-sm mb-4 hover:underline">← 返回持仓列表</button>
         <div className="flex justify-between items-start">
           <div>
             <h1 className="text-2xl lg:text-3xl font-bold text-gold mb-1">{displayName}</h1>
